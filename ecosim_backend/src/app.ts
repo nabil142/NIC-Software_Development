@@ -58,9 +58,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
   });
 });
 
-// Start listening for requests
-app.listen(port, () => {
-  console.log(`Server EcoSim Desa Backend berjalan di port ${port}`);
-});
+// Start listening for requests only if not in Vercel serverless environment
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`Server EcoSim Desa Backend berjalan di port ${port}`);
+  });
+}
 
 export default app;
