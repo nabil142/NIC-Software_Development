@@ -111,8 +111,6 @@ class SummaryReportPage extends ConsumerWidget {
                     _buildRowDetail('Jumlah Penduduk', '${village.population} Jiwa'),
                     const Divider(height: 12),
                     _buildRowDetail('Luas Wilayah', '${village.areaKm2} Km²'),
-                    const Divider(height: 12),
-                    _buildRowDetail('Luas Lahan Pertanian', '${village.agriculturalAreaKm2} Km²'),
                   ],
                 ),
               ),

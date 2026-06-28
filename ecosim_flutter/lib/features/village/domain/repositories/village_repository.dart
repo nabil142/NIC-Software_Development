@@ -5,7 +5,9 @@ abstract class VillageRepository {
     required String villageName,
     required int population,
     required double areaKm2,
-    required double agriculturalAreaKm2,
+    String? districtName,
+    String? cityName,
+    String? potential,
   });
   Future<VillageModel?> getActiveVillage();
 }

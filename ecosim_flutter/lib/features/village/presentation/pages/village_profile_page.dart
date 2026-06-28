@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../controllers/village_controller.dart';
 import '../../../assessment/presentation/controllers/assessment_controller.dart';
+import '../../../scenario/presentation/controllers/scenario_controller.dart';
 
 class VillageProfilePage extends ConsumerStatefulWidget {
   const VillageProfilePage({super.key});
@@ -16,21 +18,24 @@ class VillageProfilePage extends ConsumerStatefulWidget {
 class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
-  final _populationController = TextEditingController();
+  final _districtController = TextEditingController();
+  final _cityController = TextEditingController();
   final _areaController = TextEditingController();
-  final _agriAreaController = TextEditingController();
+  final _populationController = TextEditingController();
+  final _potentialController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // Prepopulate form if profile already exists
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final village = ref.read(villageControllerProvider).activeVillage;
       if (village != null) {
         _nameController.text = village.villageName;
         _populationController.text = village.population.toString();
         _areaController.text = village.areaKm2.toString();
-        _agriAreaController.text = village.agriculturalAreaKm2.toString();
+        _districtController.text = village.districtName ?? '';
+        _cityController.text = village.cityName ?? '';
+        _potentialController.text = village.potential ?? '';
       }
     });
   }
@@ -38,9 +43,11 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
   @override
   void dispose() {
     _nameController.dispose();
-    _populationController.dispose();
+    _districtController.dispose();
+    _cityController.dispose();
     _areaController.dispose();
-    _agriAreaController.dispose();
+    _populationController.dispose();
+    _potentialController.dispose();
     super.dispose();
   }
 
@@ -51,7 +58,9 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
       villageName: _nameController.text.trim(),
       population: int.parse(_populationController.text.trim()),
       areaKm2: double.parse(_areaController.text.trim()),
-      agriculturalAreaKm2: double.parse(_agriAreaController.text.trim()),
+      districtName: _districtController.text.trim(),
+      cityName: _cityController.text.trim(),
+      potential: _potentialController.text.trim(),
     );
 
     if (success && mounted) {
@@ -61,9 +70,83 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
           backgroundColor: AppTheme.excellentColor,
         ),
       );
-      // Route onwards to the assessment questionnaire page
-      context.go('/assessment');
+      // Pindah ke dashboard atau asesmen jika berhasil
+      final hasAssessment = ref.read(assessmentControllerProvider).latestAssessment != null;
+      if (hasAssessment) {
+        context.go('/scenarios');
+      } else {
+        context.go('/assessment');
+      }
     }
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required String title,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE9F0E6),
+              borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+            ),
+            child: Icon(icon, color: AppTheme.textDark, size: 28),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextFormField(
+                controller: controller,
+                keyboardType: keyboardType,
+                decoration: InputDecoration(
+                  labelText: title,
+                  labelStyle: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMedium),
+                  hintText: label,
+                  hintStyle: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark, fontWeight: FontWeight.bold),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+                style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark, fontWeight: FontWeight.bold),
+                validator: validator,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE9F0E6),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.edit_outlined, size: 18, color: AppTheme.textDark),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -71,182 +154,208 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
     final villageState = ref.watch(villageControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profil Geografis Desa'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              ref.read(authControllerProvider.notifier).logout();
-              ref.read(villageControllerProvider.notifier).clear();
-              ref.read(assessmentControllerProvider.notifier).clear();
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Konfigurasi Parameter Desa',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryColor,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Parameter ini digunakan oleh AI EcoSim untuk menghitung kebutuhan anggaran kerja, kelayakan program, dan memproyeksikan kapasitas adaptasi lingkungan secara spesifik.',
-                    style: TextStyle(color: AppTheme.textMedium, height: 1.4),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Form
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
+      backgroundColor: const Color(0xFFF7F8F4), // Background dari mockup
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Header Area
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Name
-                                TextFormField(
-                                  controller: _nameController,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Nama Desa',
-                                    prefixIcon: Icon(Icons.home_outlined),
+                                Text(
+                                  'Profil Desa',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Nama desa wajib diisi.';
-                                    }
-                                    return null;
-                                  },
                                 ),
-                                const SizedBox(height: 16),
-
-                                // Population
-                                TextFormField(
-                                  controller: _populationController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Jumlah Penduduk (Jiwa)',
-                                    prefixIcon: Icon(Icons.people_outline),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Konfigurasi parameter desa untuk analisis dan perencanaan yang lebih tepat',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    color: AppTheme.textDark,
+                                    height: 1.4,
                                   ),
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Jumlah penduduk wajib diisi.';
-                                    }
-                                    if (int.tryParse(val) == null) {
-                                      return 'Masukkan angka bulat positif.';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Total Area
-                                TextFormField(
-                                  controller: _areaController,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Luas Wilayah (Km²)',
-                                    prefixIcon: Icon(Icons.map_outlined),
-                                  ),
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Luas wilayah wajib diisi.';
-                                    }
-                                    if (double.tryParse(val) == null) {
-                                      return 'Masukkan angka desimal yang valid.';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Agricultural Area
-                                TextFormField(
-                                  controller: _agriAreaController,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                  decoration: const InputDecoration(
-                                    labelText: 'Luas Pertanian/Sawah (Km²)',
-                                    prefixIcon: Icon(Icons.agriculture_outlined),
-                                  ),
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Luas sawah wajib diisi.';
-                                    }
-                                    final doubleVal = double.tryParse(val);
-                                    if (doubleVal == null) {
-                                      return 'Masukkan angka desimal yang valid.';
-                                    }
-                                    final areaVal = double.tryParse(_areaController.text);
-                                    if (areaVal != null && doubleVal > areaVal) {
-                                      return 'Luas sawah tidak boleh melebihi luas wilayah.';
-                                    }
-                                    return null;
-                                  },
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-
-                        if (villageState.errorMessage != null) ...[
-                          Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppTheme.poorColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              villageState.errorMessage!,
-                              style: const TextStyle(color: AppTheme.poorColor),
-                              textAlign: TextAlign.center,
+                          const SizedBox(width: 16),
+                          GestureDetector(
+                            onTap: () {
+                              ref.read(authControllerProvider.notifier).logout();
+                              ref.read(villageControllerProvider.notifier).clear();
+                              ref.read(assessmentControllerProvider.notifier).clear();
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE3EED0),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                children: [
+                                  const Icon(Icons.logout, size: 24, color: Colors.black),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Keluar',
+                                    style: GoogleFonts.inter(fontSize: 10, color: Colors.black, fontWeight: FontWeight.w500),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 20),
                         ],
-
-                        ElevatedButton(
-                          onPressed: villageState.isLoading ? null : _save,
-                          child: villageState.isLoading
-                              ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : const Text('Simpan & Lanjutkan'),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+
+                    // Header Image
+                    Image.asset(
+                      'assets/images/profile_background.png',
+                      height: 160,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => const SizedBox(height: 160),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Form
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            _buildTextField(
+                              controller: _nameController,
+                              title: 'Nama Desa',
+                              label: 'Masukkan nama desa',
+                              icon: Icons.home_outlined,
+                              validator: (val) => val == null || val.isEmpty ? 'Wajib diisi' : null,
+                            ),
+                            _buildTextField(
+                              controller: _districtController,
+                              title: 'Nama Kecamatan',
+                              label: 'SukaMaju',
+                              icon: Icons.home_outlined,
+                            ),
+                            _buildTextField(
+                              controller: _cityController,
+                              title: 'Nama Kabupaten/Kota',
+                              label: 'Jaya',
+                              icon: Icons.home_outlined,
+                            ),
+                            _buildTextField(
+                              controller: _areaController,
+                              title: 'Luas Wilayah (Km²)',
+                              label: '3500.0',
+                              icon: Icons.zoom_in_map_outlined,
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) return 'Wajib diisi';
+                                if (double.tryParse(val) == null) return 'Angka tidak valid';
+                                return null;
+                              },
+                            ),
+                            _buildTextField(
+                              controller: _populationController,
+                              title: 'Jumlah Penduduk (Jiwa)',
+                              label: '5000',
+                              icon: Icons.people_outline,
+                              keyboardType: TextInputType.number,
+                              validator: (val) {
+                                if (val == null || val.isEmpty) return 'Wajib diisi';
+                                if (int.tryParse(val) == null) return 'Angka tidak valid';
+                                return null;
+                              },
+                            ),
+                            _buildTextField(
+                              controller: _potentialController,
+                              title: 'Potensi Desa',
+                              label: 'Masukkan potensi desa',
+                              icon: Icons.water_drop_outlined,
+                            ),
+
+                            const SizedBox(height: 16),
+                            if (villageState.errorMessage != null) ...[
+                              Text(
+                                villageState.errorMessage!,
+                                style: const TextStyle(color: AppTheme.poorColor),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+
+                            // Save Button
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF56804A),
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                                onPressed: villageState.isLoading ? null : _save,
+                                child: villageState.isLoading
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      )
+                                    : Text(
+                                        'Simpan Profil',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          // Bottom Navigation Bar matching design style (only visible if profile exists)
-          if (villageState.activeVillage != null)
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(top: BorderSide(color: Colors.grey.withOpacity(0.15), width: 1)),
-              ),
-              child: SafeArea(
+            // Bottom Navigation Bar
+            if (villageState.activeVillage != null)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -4),
+                    ),
+                  ],
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -257,14 +366,14 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                   ],
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildNavItem(int index, IconData outline, IconData solid) {
-    const int currentNavIndex = 3; // Active on Profile/Settings (Person icon)
+    const int currentNavIndex = 3;
     final isActive = currentNavIndex == index;
     final color = isActive ? const Color(0xFF3E6D4E) : Colors.grey;
 
@@ -275,16 +384,25 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
         } else if (index == 1) {
           context.go('/future-builder');
         } else if (index == 2) {
-          context.go('/policy-analyst');
+          final activeScenario = ref.read(scenarioControllerProvider).activeScenario;
+          if (activeScenario == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Buat skenario di Future Builder terlebih dahulu.'),
+                backgroundColor: AppTheme.poorColor,
+              ),
+            );
+            context.go('/future-builder');
+          } else {
+            context.go('/policy-analyst');
+          }
         } else if (index == 3) {
-          context.go('/village-profile');
+          // Already here
         }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-        ),
+        color: Colors.transparent,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

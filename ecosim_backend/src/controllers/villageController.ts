@@ -4,14 +4,14 @@ import { prisma } from '../lib/prisma';
 
 export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Response) {
   const userId = req.user?.id;
-  const { villageName, population, areaKm2, agriculturalAreaKm2 } = req.body;
+  const { villageName, population, areaKm2, districtName, cityName, potential } = req.body;
 
   if (!userId) {
     return res.status(401).json({ error: 'Sesi kedaluwarsa atau tidak terotorisasi.' });
   }
 
-  if (!villageName || population === undefined || areaKm2 === undefined || agriculturalAreaKm2 === undefined) {
-    return res.status(400).json({ error: 'Semua field (villageName, population, areaKm2, agriculturalAreaKm2) wajib diisi.' });
+  if (!villageName || population === undefined || areaKm2 === undefined) {
+    return res.status(400).json({ error: 'Field villageName, population, dan areaKm2 wajib diisi.' });
   }
 
   try {
@@ -31,7 +31,9 @@ export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Resp
           villageName,
           population: parseInt(population),
           areaKm2: parseFloat(areaKm2),
-          agriculturalAreaKm2: parseFloat(agriculturalAreaKm2)
+          districtName,
+          cityName,
+          potential
         }
       });
     } else {
@@ -42,7 +44,9 @@ export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Resp
           villageName,
           population: parseInt(population),
           areaKm2: parseFloat(areaKm2),
-          agriculturalAreaKm2: parseFloat(agriculturalAreaKm2)
+          districtName,
+          cityName,
+          potential
         }
       });
     }

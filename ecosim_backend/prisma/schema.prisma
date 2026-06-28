@@ -23,7 +23,9 @@ model Village {
   villageName           String
   population            Int
   areaKm2               Float
-  agriculturalAreaKm2   Float
+  districtName          String?
+  cityName              String?
+  potential             String?
   createdAt             DateTime                  @default(now())
   updatedAt             DateTime                  @updatedAt
   assessments           EnvironmentalAssessment[]

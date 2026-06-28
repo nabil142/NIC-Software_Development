@@ -15,7 +15,9 @@ class VillageRepositoryImpl implements VillageRepository {
     required String villageName,
     required int population,
     required double areaKm2,
-    required double agriculturalAreaKm2,
+    String? districtName,
+    String? cityName,
+    String? potential,
   }) async {
     try {
       final response = await _dioClient.dio.post(
@@ -24,7 +26,9 @@ class VillageRepositoryImpl implements VillageRepository {
           'villageName': villageName,
           'population': population,
           'areaKm2': areaKm2,
-          'agriculturalAreaKm2': agriculturalAreaKm2,
+          'districtName': districtName,
+          'cityName': cityName,
+          'potential': potential,
         },
       );
       final data = response.data as Map<String, dynamic>;

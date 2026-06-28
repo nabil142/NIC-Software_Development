@@ -3,7 +3,6 @@
 interface VillagePayload {
   name: string;
   population: number;
-  agriculturalAreaKm2: number;
 }
 
 interface ScenarioPayload {
@@ -53,7 +52,6 @@ Tugas Anda adalah membandingkan beberapa skenario pembangunan desa berikut secar
 Data Desa:
 - Nama: ${village.name}
 - Jumlah Penduduk: ${village.population} jiwa
-- Luas Wilayah Pertanian: ${village.agriculturalAreaKm2} km²
 
 Kondisi Baseline DNA Desa (Saat Ini):
 - Waste Management: ${baseline.waste_health}
@@ -96,7 +94,6 @@ Tugas Anda adalah merancang dokumen rencana Cetak Biru (Blueprint) teknis implem
 Data Desa:
 - Nama Desa: ${village.name}
 - Jumlah Penduduk: ${village.population} jiwa
-- Luas Pertanian: ${village.agriculturalAreaKm2} km²
 
 Kondisi Kualitatif DNA Desa Saat Ini:
 - Pengelolaan Sampah (Waste Management): ${baseline.waste_health}

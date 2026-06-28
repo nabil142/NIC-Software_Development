@@ -271,7 +271,7 @@ class _ScenarioListPageState extends ConsumerState<ScenarioListPage> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                'Kecamatan ${village?.villageName ?? 'Sukamaju'}, Kab. Jaya',
+                                'Kecamatan ${village?.districtName ?? 'Sukamaju'}, ${village?.cityName ?? 'Kab. Jaya'}',
                                 style: GoogleFonts.inter(
                                   color: AppTheme.textMedium,
                                   fontSize: 12,

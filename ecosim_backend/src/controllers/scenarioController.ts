@@ -192,8 +192,7 @@ export async function runScenarioAnalysis(req: AuthenticatedRequest, res: Respon
       mode: 'analysis',
       village: {
         name: village.villageName,
-        population: village.population,
-        agriculturalAreaKm2: village.agriculturalAreaKm2
+        population: village.population
       },
       baseline: baselineDna,
       scenarios: scenariosPayload
@@ -253,8 +252,7 @@ export async function runScenarioBlueprint(req: AuthenticatedRequest, res: Respo
       mode: 'blueprint',
       village: {
         name: village.villageName,
-        population: village.population,
-        agriculturalAreaKm2: village.agriculturalAreaKm2
+        population: village.population
       },
       baseline: baselineDna,
       scenarios: [{
