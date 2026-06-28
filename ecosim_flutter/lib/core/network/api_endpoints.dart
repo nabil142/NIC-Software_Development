@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 class ApiEndpoints {
   // Ganti URL ini dengan URL Vercel hasil deployment Anda nanti
-  static const String productionUrl = 'https://ecosim-desa-backend.vercel.app/api';
-  static const String developmentUrl = 'http://127.0.0.1:5000/api';
+  static const String productionUrl = 'https://nic-software-development.vercel.app/api';
+  static const String developmentUrl = 'http://10.0.2.2:5000/api'; // Menggunakan 10.0.2.2 untuk Android Emulator jika berjalan di lokal
 
   static const String baseUrl = kReleaseMode ? productionUrl : developmentUrl;
   

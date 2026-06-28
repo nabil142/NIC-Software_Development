@@ -44,6 +44,11 @@ app.get('/api/scenarios', authMiddleware as any, getScenarios as any);
 app.post('/api/scenarios/:id/analyst', authMiddleware as any, runScenarioAnalysis as any);
 app.post('/api/scenarios/:id/blueprint', authMiddleware as any, runScenarioBlueprint as any);
 
+// Root endpoint for friendly message
+app.get('/', (req, res) => {
+  res.status(200).send('EcoSim Desa Backend API is running perfectly!');
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date() });
