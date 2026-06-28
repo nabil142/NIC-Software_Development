@@ -1,0 +1,66 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  villages     Village[]
+}
+
+model Village {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  userId                String                    @db.Uuid
+  user                  User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  villageName           String
+  population            Int
+  areaKm2               Float
+  agriculturalAreaKm2   Float
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+  assessments           EnvironmentalAssessment[]
+  scenarios             Scenario[]
+}
+
+model EnvironmentalAssessment {
+  id                 String   @id @default(uuid()) @db.Uuid
+  villageId          String   @db.Uuid
+  village            Village  @relation(fields: [villageId], references: [id], onDelete: Cascade)
+  wasteLevel         Int
+  wasteManagement    String   // 'none', 'tps', 'bank_sampah', 'komposter'
+  waterQuality       Int
+  riverContaminated  Boolean
+  greenSpace         Int
+  floodRisk          Int
+  existingPrograms   String[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Scenario {
+  id                     String   @id @default(uuid()) @db.Uuid
+  villageId              String   @db.Uuid
+  village                Village  @relation(fields: [villageId], references: [id], onDelete: Cascade)
+  scenarioName           String
+  selectedPrograms       String[]
+  baselineWasteHealth    Int
+  baselineWaterHealth    Int
+  baselineGreenHealth    Int
+  baselineResilience     Int
+  projectedWasteHealth   Int
+  projectedWaterHealth   Int
+  projectedGreenHealth   Int
+  projectedResilience    Int
+  aiAnalysis             String?  @db.Text
+  narrativeText          String?  @db.Text // blueprint text
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}

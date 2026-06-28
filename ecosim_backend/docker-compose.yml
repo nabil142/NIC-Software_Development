@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  # Local PostgreSQL database for local development and testing
+  postgres:
+    image: postgres:15-alpine
+    container_name: ecosim_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ecosim_user
+      POSTGRES_PASSWORD: ecosim_secure_password
+      POSTGRES_DB: ecosim_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
