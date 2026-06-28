@@ -4,6 +4,7 @@
   "description": "Backend API for EcoSim Desa using Node.js, Express, TypeScript, and Prisma ORM",
   "main": "dist/app.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "prisma generate",
     "dev": "nodemon src/app.ts"
   },
