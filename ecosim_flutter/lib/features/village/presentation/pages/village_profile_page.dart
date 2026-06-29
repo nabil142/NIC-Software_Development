@@ -54,14 +54,16 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final success = await ref.read(villageControllerProvider.notifier).saveProfile(
-      villageName: _nameController.text.trim(),
-      population: int.parse(_populationController.text.trim()),
-      areaKm2: double.parse(_areaController.text.trim()),
-      districtName: _districtController.text.trim(),
-      cityName: _cityController.text.trim(),
-      potential: _potentialController.text.trim(),
-    );
+    final success = await ref
+        .read(villageControllerProvider.notifier)
+        .saveProfile(
+          villageName: _nameController.text.trim(),
+          population: int.parse(_populationController.text.trim()),
+          areaKm2: double.parse(_areaController.text.trim()),
+          districtName: _districtController.text.trim(),
+          cityName: _cityController.text.trim(),
+          potential: _potentialController.text.trim(),
+        );
 
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -70,8 +72,9 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
           backgroundColor: AppTheme.excellentColor,
         ),
       );
-      // Pindah ke dashboard atau asesmen jika berhasil
-      final hasAssessment = ref.read(assessmentControllerProvider).latestAssessment != null;
+
+      final hasAssessment =
+          ref.read(assessmentControllerProvider).latestAssessment != null;
       if (hasAssessment) {
         context.go('/scenarios');
       } else {
@@ -107,7 +110,9 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: const Color(0xFFE9F0E6),
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+              borderRadius: const BorderRadius.horizontal(
+                left: Radius.circular(16),
+              ),
             ),
             child: Icon(icon, color: AppTheme.textDark, size: 28),
           ),
@@ -119,16 +124,27 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                 keyboardType: keyboardType,
                 decoration: InputDecoration(
                   labelText: title,
-                  labelStyle: GoogleFonts.inter(fontSize: 11, color: AppTheme.textMedium),
+                  labelStyle: GoogleFonts.inter(
+                    fontSize: 11,
+                    color: AppTheme.textMedium,
+                  ),
                   hintText: label,
-                  hintStyle: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark, fontWeight: FontWeight.bold),
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 15,
+                    color: AppTheme.textDark,
+                    fontWeight: FontWeight.bold,
+                  ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
                 ),
-                style: GoogleFonts.inter(fontSize: 15, color: AppTheme.textDark, fontWeight: FontWeight.bold),
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  color: AppTheme.textDark,
+                  fontWeight: FontWeight.bold,
+                ),
                 validator: validator,
               ),
             ),
@@ -141,7 +157,11 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                 color: const Color(0xFFE9F0E6),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.edit_outlined, size: 18, color: AppTheme.textDark),
+              child: const Icon(
+                Icons.edit_outlined,
+                size: 18,
+                color: AppTheme.textDark,
+              ),
             ),
           ),
         ],
@@ -154,7 +174,7 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
     final villageState = ref.watch(villageControllerProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8F4), // Background dari mockup
+      backgroundColor: const Color(0xFFF7F8F4),
       body: SafeArea(
         child: Column(
           children: [
@@ -164,7 +184,6 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header Area
                     Padding(
                       padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
                       child: Row(
@@ -198,23 +217,40 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                           const SizedBox(width: 16),
                           GestureDetector(
                             onTap: () {
-                              ref.read(authControllerProvider.notifier).logout();
-                              ref.read(villageControllerProvider.notifier).clear();
-                              ref.read(assessmentControllerProvider.notifier).clear();
+                              ref
+                                  .read(authControllerProvider.notifier)
+                                  .logout();
+                              ref
+                                  .read(villageControllerProvider.notifier)
+                                  .clear();
+                              ref
+                                  .read(assessmentControllerProvider.notifier)
+                                  .clear();
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFE3EED0),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Column(
                                 children: [
-                                  const Icon(Icons.logout, size: 24, color: Colors.black),
+                                  const Icon(
+                                    Icons.logout,
+                                    size: 24,
+                                    color: Colors.black,
+                                  ),
                                   const SizedBox(height: 4),
                                   Text(
                                     'Keluar',
-                                    style: GoogleFonts.inter(fontSize: 10, color: Colors.black, fontWeight: FontWeight.w500),
+                                    style: GoogleFonts.inter(
+                                      fontSize: 10,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -224,17 +260,17 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                       ),
                     ),
 
-                    // Header Image
                     Image.asset(
                       'assets/images/profile_background.png',
                       height: 160,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const SizedBox(height: 160),
+                      errorBuilder:
+                          (context, error, stackTrace) =>
+                              const SizedBox(height: 160),
                     ),
                     const SizedBox(height: 16),
 
-                    // Form
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: Form(
@@ -246,7 +282,11 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                               title: 'Nama Desa',
                               label: 'Masukkan nama desa',
                               icon: Icons.home_outlined,
-                              validator: (val) => val == null || val.isEmpty ? 'Wajib diisi' : null,
+                              validator:
+                                  (val) =>
+                                      val == null || val.isEmpty
+                                          ? 'Wajib diisi'
+                                          : null,
                             ),
                             _buildTextField(
                               controller: _districtController,
@@ -265,10 +305,15 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                               title: 'Luas Wilayah (Km²)',
                               label: '3500.0',
                               icon: Icons.zoom_in_map_outlined,
-                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                    decimal: true,
+                                  ),
                               validator: (val) {
-                                if (val == null || val.isEmpty) return 'Wajib diisi';
-                                if (double.tryParse(val) == null) return 'Angka tidak valid';
+                                if (val == null || val.isEmpty)
+                                  return 'Wajib diisi';
+                                if (double.tryParse(val) == null)
+                                  return 'Angka tidak valid';
                                 return null;
                               },
                             ),
@@ -279,8 +324,10 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                               icon: Icons.people_outline,
                               keyboardType: TextInputType.number,
                               validator: (val) {
-                                if (val == null || val.isEmpty) return 'Wajib diisi';
-                                if (int.tryParse(val) == null) return 'Angka tidak valid';
+                                if (val == null || val.isEmpty)
+                                  return 'Wajib diisi';
+                                if (int.tryParse(val) == null)
+                                  return 'Angka tidak valid';
                                 return null;
                               },
                             ),
@@ -295,41 +342,79 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                             if (villageState.errorMessage != null) ...[
                               Text(
                                 villageState.errorMessage!,
-                                style: const TextStyle(color: AppTheme.poorColor),
+                                style: const TextStyle(
+                                  color: AppTheme.poorColor,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 16),
                             ],
 
-                            // Save Button
+                            if (villageState.activeVillage != null) ...[
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
+                                    ),
+                                    side: const BorderSide(
+                                      color: Color(0xFF2A6A0A),
+                                      width: 1.5,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                  ),
+                                  onPressed: () => context.go('/assessment'),
+                                  child: Text(
+                                    'Lihat / Sesuaikan Asesmen',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF2A6A0A),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
+
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF56804A),
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(24),
                                   ),
                                 ),
-                                onPressed: villageState.isLoading ? null : _save,
-                                child: villageState.isLoading
-                                    ? const SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.5,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                onPressed:
+                                    villageState.isLoading ? null : _save,
+                                child:
+                                    villageState.isLoading
+                                        ? const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        )
+                                        : Text(
+                                          'Simpan Profil',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      )
-                                    : Text(
-                                        'Simpan Profil',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
                               ),
                             ),
                             const SizedBox(height: 32),
@@ -341,13 +426,15 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                 ),
               ),
             ),
-            // Bottom Navigation Bar
+
             if (villageState.activeVillage != null)
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
@@ -361,7 +448,11 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                   children: [
                     _buildNavItem(0, Icons.home_outlined, Icons.home),
                     _buildNavItem(1, Icons.settings_outlined, Icons.settings),
-                    _buildNavItem(2, Icons.auto_awesome_outlined, Icons.auto_awesome),
+                    _buildNavItem(
+                      2,
+                      Icons.auto_awesome_outlined,
+                      Icons.auto_awesome,
+                    ),
                     _buildNavItem(3, Icons.person_outline, Icons.person),
                   ],
                 ),
@@ -384,11 +475,14 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
         } else if (index == 1) {
           context.go('/future-builder');
         } else if (index == 2) {
-          final activeScenario = ref.read(scenarioControllerProvider).activeScenario;
+          final activeScenario =
+              ref.read(scenarioControllerProvider).activeScenario;
           if (activeScenario == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('Buat skenario di Future Builder terlebih dahulu.'),
+                content: Text(
+                  'Buat skenario di Future Builder terlebih dahulu.',
+                ),
                 backgroundColor: AppTheme.poorColor,
               ),
             );
@@ -396,9 +490,7 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
           } else {
             context.go('/policy-analyst');
           }
-        } else if (index == 3) {
-          // Already here
-        }
+        } else if (index == 3) {}
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

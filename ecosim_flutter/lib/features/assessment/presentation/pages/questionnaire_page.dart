@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/constants/knowledge_base.dart';
 import '../../../village/presentation/controllers/village_controller.dart';
 import '../controllers/assessment_controller.dart';
 
@@ -16,122 +16,200 @@ class QuestionnairePage extends ConsumerStatefulWidget {
 class _QuestionnairePageState extends ConsumerState<QuestionnairePage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Form values
-  double _wasteLevel = 5.0;
-  String _wasteManagement = 'none';
-  double _waterQuality = 5.0;
-  bool _riverContaminated = false;
-  double _greenSpace = 5.0;
-  double _floodRisk = 3.0;
-  final List<String> _selectedExistingPrograms = [];
+  String? _wasteManagement;
+  int? _wasteLevel;
+  int? _waterQuality;
+  bool? _riverContaminated;
+  int? _greenSpace;
+  int? _floodRisk;
 
-  final List<Map<String, String>> _wasteManagementOptions = [
-    {'value': 'none', 'label': 'Tidak ada pengelolaan (Dibuang sembarangan / dibakar)'},
-    {'value': 'tps', 'label': 'TPS (Tempat Pembuangan Sementara - diangkut berkala)'},
-    {'value': 'bank_sampah', 'label': 'Bank Sampah (Pilah & daur ulang aktif)'},
-    {'value': 'komposter', 'label': 'Komposter Rumah Tangga / Kelompok Tani'},
-  ];
+  final TextEditingController _potentialController = TextEditingController();
+
+  @override
+  void dispose() {
+    _potentialController.dispose();
+    super.dispose();
+  }
 
   Future<void> _submit() async {
+    if (_wasteManagement == null ||
+        _wasteLevel == null ||
+        _waterQuality == null ||
+        _riverContaminated == null ||
+        _greenSpace == null ||
+        _floodRisk == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harap jawab semua pertanyaan asesmen!')),
+      );
+      return;
+    }
+
     final village = ref.read(villageControllerProvider).activeVillage;
     if (village == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profil desa belum diset!')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Profil desa belum diset!')));
       context.go('/village-profile');
       return;
     }
 
-    final success = await ref.read(assessmentControllerProvider.notifier).submitAssessment(
-      villageId: village.id,
-      wasteLevel: _wasteLevel.round(),
-      wasteManagement: _wasteManagement,
-      waterQuality: _waterQuality.round(),
-      riverContaminated: _riverContaminated,
-      greenSpace: _greenSpace.round(),
-      floodRisk: _floodRisk.round(),
-      existingPrograms: _selectedExistingPrograms,
-    );
+    final success = await ref
+        .read(assessmentControllerProvider.notifier)
+        .submitAssessment(
+          villageId: village.id,
+          wasteLevel: _wasteLevel!,
+          wasteManagement: _wasteManagement!,
+          waterQuality: _waterQuality!,
+          riverContaminated: _riverContaminated!,
+          greenSpace: _greenSpace!,
+          floodRisk: _floodRisk!,
+          existingPrograms: [],
+          potentialProblem: _potentialController.text.trim(),
+        );
 
     if (success && mounted) {
       context.go('/dna-result');
     }
   }
 
-  Widget _buildSliderCard({
+  Widget _buildSectionCard({
+    required int number,
     required String title,
-    required String subtitle,
-    required double value,
-    required ValueChanged<double> onChanged,
-    required double min,
-    required double max,
-    required String minLabel,
-    required String maxLabel,
     required IconData icon,
-    required Color color,
+    required List<Widget> children,
   }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, color: color, size: 28),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 2),
-                      Text(subtitle, style: const TextStyle(fontSize: 12, color: AppTheme.textLight)),
-                    ],
-                  ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Text(
-                  value.round().toString(),
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Slider(
-              value: value,
-              min: min,
-              max: max,
-              divisions: (max - min).round(),
-              activeColor: color,
-              onChanged: onChanged,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      minLabel,
-                      style: const TextStyle(fontSize: 11, color: AppTheme.textLight),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      maxLabel,
-                      textAlign: TextAlign.end,
-                      style: const TextStyle(fontSize: 11, color: AppTheme.textLight),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+                child: Icon(icon, color: AppTheme.primaryColor, size: 24),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  '$number. $title',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubtext(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12, top: 8),
+      child: Text(
+        text,
+        style: GoogleFonts.inter(fontSize: 12, color: Colors.black54),
+      ),
+    );
+  }
+
+  Widget _buildOptionButton<T>({
+    required String text,
+    required T value,
+    required T? groupValue,
+    required ValueChanged<T?> onChanged,
+  }) {
+    final isSelected = value == groupValue;
+    return GestureDetector(
+      onTap: () => onChanged(value),
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? AppTheme.primaryColor.withValues(alpha: 0.05)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color:
+                isSelected
+                    ? AppTheme.primaryColor
+                    : Colors.grey.withValues(alpha: 0.3),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Text(
+          text,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            color: isSelected ? AppTheme.primaryColor : Colors.black87,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
+  String? _selectedRiverContaminatedLabel;
+  Widget _buildRiverOptionButton({required String text, required bool value}) {
+    final isSelected = _selectedRiverContaminatedLabel == text;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedRiverContaminatedLabel = text;
+          _riverContaminated = value;
+        });
+      },
+      child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color:
+              isSelected
+                  ? AppTheme.primaryColor.withValues(alpha: 0.05)
+                  : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color:
+                isSelected
+                    ? AppTheme.primaryColor
+                    : Colors.grey.withValues(alpha: 0.3),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Text(
+          text,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            color: isSelected ? AppTheme.primaryColor : Colors.black87,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          ),
         ),
       ),
     );
@@ -140,252 +218,294 @@ class _QuestionnairePageState extends ConsumerState<QuestionnairePage> {
   @override
   Widget build(BuildContext context) {
     final assessmentState = ref.watch(assessmentControllerProvider);
-    final village = ref.watch(villageControllerProvider).activeVillage;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F8F4),
       appBar: AppBar(
-        title: const Text('Asesmen Lingkungan Desa'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: const BackButton(color: Colors.black87),
+        centerTitle: false,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Kuesioner PODES Desa ${village?.villageName ?? ""}',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Asesmen Lingkungan',
+                  style: GoogleFonts.inter(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Jawab beberapa pertanyaan untuk membantu kami memahami kondisi desa anda',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    color: Colors.black54,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                _buildSectionCard(
+                  number: 1,
+                  title: 'Manajemen Sampah',
+                  icon: Icons.restore_from_trash_outlined,
+                  children: [
+                    _buildSubtext(
+                      'Bagaimana sistem pengelolaan sampah di desa anda?',
                     ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Jawab pertanyaan kualitatif berikut sesuai kondisi lapangan riil di desa untuk memetakan indikator DNA lingkungan hidup saat ini.',
-                style: TextStyle(color: AppTheme.textMedium, height: 1.4),
-              ),
-              const SizedBox(height: 24),
+                    _buildOptionButton<String>(
+                      text: 'Tidak Ada / Dibakar / Dibuang Sembarangan',
+                      value: 'none',
+                      groupValue: _wasteManagement,
+                      onChanged:
+                          (val) => setState(() => _wasteManagement = val),
+                    ),
+                    _buildOptionButton<String>(
+                      text: 'TPS Terdekat (Tempat Pembuangan Sementara)',
+                      value: 'tps',
+                      groupValue: _wasteManagement,
+                      onChanged:
+                          (val) => setState(() => _wasteManagement = val),
+                    ),
+                    _buildOptionButton<String>(
+                      text: 'Sistem Komposter Rumah Tangga / Komunal',
+                      value: 'komposter',
+                      groupValue: _wasteManagement,
+                      onChanged:
+                          (val) => setState(() => _wasteManagement = val),
+                    ),
+                    _buildOptionButton<String>(
+                      text: 'Bank Sampah Komunitas',
+                      value: 'bank_sampah',
+                      groupValue: _wasteManagement,
+                      onChanged:
+                          (val) => setState(() => _wasteManagement = val),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildSubtext(
+                      'Kondisi sampah tidak terkelola (Timbulan sampah liar)',
+                    ),
+                    _buildOptionButton<int>(
+                      text: 'Rendah (Hampir tidak ada sampah liar berserakan)',
+                      value: 1,
+                      groupValue: _wasteLevel,
+                      onChanged: (val) => setState(() => _wasteLevel = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text:
+                          'Sedang (Ada tumpukan sampah liar di beberapa lokasi)',
+                      value: 5,
+                      groupValue: _wasteLevel,
+                      onChanged: (val) => setState(() => _wasteLevel = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text:
+                          'Tinggi (Tumpukan sampah liar berserakan di banyak tempat)',
+                      value: 10,
+                      groupValue: _wasteLevel,
+                      onChanged: (val) => setState(() => _wasteLevel = val),
+                    ),
+                  ],
+                ),
 
-              // 1. Waste Volume Level
-              _buildSliderCard(
-                title: 'Volume Sampah Harian',
-                subtitle: 'Seberapa besar volume timbulan sampah harian di desa?',
-                value: _wasteLevel,
-                onChanged: (val) => setState(() => _wasteLevel = val),
-                min: 1,
-                max: 10,
-                minLabel: 'Sangat Sedikit',
-                maxLabel: 'Sangat Banyak (Menumpuk)',
-                icon: Icons.delete_outline,
-                color: AppTheme.poorColor,
-              ),
-              const SizedBox(height: 16),
+                _buildSectionCard(
+                  number: 2,
+                  title: 'Kualitas Air & Sanitasi Sungai',
+                  icon: Icons.water_drop_outlined,
+                  children: [
+                    _buildSubtext('Kondisi sumber air bersih utama warga'),
+                    _buildOptionButton<int>(
+                      text:
+                          'Jernih, tidak berwarna, dan tidak berbau sepanjang tahun',
+                      value: 10,
+                      groupValue: _waterQuality,
+                      onChanged: (val) => setState(() => _waterQuality = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text: 'Kadang keruh atau berbau, terutama di musim hujan',
+                      value: 5,
+                      groupValue: _waterQuality,
+                      onChanged: (val) => setState(() => _waterQuality = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text:
+                          'Sering keruh, berbau, atau tidak layak digunakan sehari-hari',
+                      value: 1,
+                      groupValue: _waterQuality,
+                      onChanged: (val) => setState(() => _waterQuality = val),
+                    ),
+                    const SizedBox(height: 8),
+                    _buildSubtext('Kondisi sungai terdekat'),
+                    _buildRiverOptionButton(
+                      text: 'Bersih dan aliran lancar',
+                      value: false,
+                    ),
+                    _buildRiverOptionButton(
+                      text: 'Ada sedikit sampah hanyut',
+                      value: true,
+                    ),
+                    _buildRiverOptionButton(
+                      text: 'Banyak sampah / limbah',
+                      value: true,
+                    ),
+                  ],
+                ),
 
-              // 2. Waste Management Facilities
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.restore_from_trash_outlined, color: AppTheme.accentColor, size: 28),
-                          SizedBox(width: 12),
-                          Text(
-                            'Fasilitas Pengelolaan Sampah',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Pilih fasilitas pengelolaan sampah utama yang aktif berjalan di desa saat ini:',
-                        style: TextStyle(fontSize: 12, color: AppTheme.textLight),
-                      ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<String>(
-                        value: _wasteManagement,
-                        isExpanded: true,
-                        decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                _buildSectionCard(
+                  number: 3,
+                  title: 'Konservasi & Penghijauan',
+                  icon: Icons.park_outlined,
+                  children: [
+                    _buildSubtext('Keberadaan program penghijauan desa'),
+                    _buildOptionButton<int>(
+                      text: 'Tidak ada (Belum pernah ada program penghijauan)',
+                      value: 0,
+                      groupValue: _greenSpace,
+                      onChanged: (val) => setState(() => _greenSpace = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text: 'Terbatas (Penghijauan hanya di area terbatas)',
+                      value: 5,
+                      groupValue: _greenSpace,
+                      onChanged: (val) => setState(() => _greenSpace = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text:
+                          'Aktif dan Rutin (Penghijauan berkala di seluruh wilayah desa)',
+                      value: 10,
+                      groupValue: _greenSpace,
+                      onChanged: (val) => setState(() => _greenSpace = val),
+                    ),
+                  ],
+                ),
+
+                _buildSectionCard(
+                  number: 4,
+                  title: 'Ketahanan Risiko Bencana',
+                  icon: Icons.shield_outlined,
+                  children: [
+                    _buildSubtext('Frekuensi kejadian banjir di lingkungan'),
+                    _buildOptionButton<int>(
+                      text: 'Tidak Pernah (Desa aman dan bebas banjir)',
+                      value: 1,
+                      groupValue: _floodRisk,
+                      onChanged: (val) => setState(() => _floodRisk = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text: 'Jarang (1-2 kali kejadian pertahun)',
+                      value: 5,
+                      groupValue: _floodRisk,
+                      onChanged: (val) => setState(() => _floodRisk = val),
+                    ),
+                    _buildOptionButton<int>(
+                      text: 'Sering (Lebih dari 2 kali kejadian pertahun)',
+                      value: 10,
+                      groupValue: _floodRisk,
+                      onChanged: (val) => setState(() => _floodRisk = val),
+                    ),
+                  ],
+                ),
+
+                _buildSectionCard(
+                  number: 5,
+                  title: 'Potensi Desa',
+                  icon: Icons.groups_outlined,
+                  children: [
+                    _buildSubtext(
+                      'Jelaskan permasalahan potensi yang desa anda miliki',
+                    ),
+                    TextFormField(
+                      controller: _potentialController,
+                      maxLines: 4,
+                      minLines: 2,
+                      decoration: InputDecoration(
+                        hintText: 'Ketik Disini...',
+                        hintStyle: GoogleFonts.inter(
+                          fontSize: 13,
+                          color: Colors.grey,
                         ),
-                        items: _wasteManagementOptions.map((opt) {
-                          return DropdownMenuItem<String>(
-                            value: opt['value'],
-                            child: Text(opt['label']!, style: const TextStyle(fontSize: 13)),
-                          );
-                        }).toList(),
-                        onChanged: (val) {
-                          if (val != null) {
-                            setState(() => _wasteManagement = val);
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 3. Water Quality Level
-              _buildSliderCard(
-                title: 'Kualitas Air Konsumsi',
-                subtitle: 'Kondisi air sumur/mata air untuk kebutuhan konsumsi penduduk desa.',
-                value: _waterQuality,
-                onChanged: (val) => setState(() => _waterQuality = val),
-                min: 1,
-                max: 10,
-                minLabel: 'Keruh/Berbau/Tercemar',
-                maxLabel: 'Sangat Jernih & Layak',
-                icon: Icons.water_drop_outlined,
-                color: AppTheme.goodColor,
-              ),
-              const SizedBox(height: 16),
-
-              // 4. River contamination
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.waves, color: Colors.blueAccent, size: 28),
-                      const SizedBox(width: 12),
-                      const Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Sungai Desa Tercemar?',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              'Apakah ada sungai yang melewati desa tersumbat sampah / terkontaminasi?',
-                              style: TextStyle(fontSize: 12, color: AppTheme.textLight),
-                            ),
-                          ],
+                        contentPadding: const EdgeInsets.all(16),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF7CD28E),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: AppTheme.primaryColor,
+                            width: 2,
+                          ),
                         ),
                       ),
-                      Switch(
-                        value: _riverContaminated,
-                        activeColor: AppTheme.primaryColor,
-                        onChanged: (val) => setState(() => _riverContaminated = val),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 16),
 
-              // 5. Green Space Level
-              _buildSliderCard(
-                title: 'Luas Ruang Terbuka Hijau',
-                subtitle: 'Cakupan area hutan desa, taman, atau daerah reboisasi vegetasi aktif.',
-                value: _greenSpace,
-                onChanged: (val) => setState(() => _greenSpace = val),
-                min: 1,
-                max: 10,
-                minLabel: 'Gundul/Lahan Kering',
-                maxLabel: 'Sangat Rimbun/Banyak Hutan',
-                icon: Icons.park_outlined,
-                color: AppTheme.excellentColor,
-              ),
-              const SizedBox(height: 16),
-
-              // 6. Flood Risk Level
-              _buildSliderCard(
-                title: 'Tingkat Kerawanan Banjir',
-                subtitle: 'Seberapa sering terjadi luapan banjir saat curah hujan tinggi?',
-                value: _floodRisk,
-                onChanged: (val) => setState(() => _floodRisk = val),
-                min: 1,
-                max: 10,
-                minLabel: 'Tidak Pernah Banjir',
-                maxLabel: 'Banjir Tahunan Parah',
-                icon: Icons.warning_amber_outlined,
-                color: AppTheme.fairColor,
-              ),
-              const SizedBox(height: 16),
-
-              // 7. Existing Programs Checklist
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.assignment_outlined, color: AppTheme.primaryColor, size: 28),
-                          SizedBox(width: 12),
-                          Text(
-                            'Program Kerja Saat Ini',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Pilih program kerja lingkungan yang sudah berjalan aktif di desa Anda saat ini:',
-                        style: TextStyle(fontSize: 12, color: AppTheme.textLight),
-                      ),
-                      const SizedBox(height: 12),
-                      ...programsCatalog.map((program) {
-                        return CheckboxListTile(
-                          title: Text(program.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                          subtitle: Text(program.description, style: const TextStyle(fontSize: 11)),
-                          value: _selectedExistingPrograms.contains(program.id),
-                          activeColor: AppTheme.primaryColor,
-                          dense: true,
-                          onChanged: (val) {
-                            setState(() {
-                              if (val == true) {
-                                _selectedExistingPrograms.add(program.id);
-                              } else {
-                                _selectedExistingPrograms.remove(program.id);
-                              }
-                            });
-                          },
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              if (assessmentState.errorMessage != null) ...[
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppTheme.poorColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    assessmentState.errorMessage!,
-                    style: const TextStyle(color: AppTheme.poorColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
                 const SizedBox(height: 20),
-              ],
+                if (assessmentState.errorMessage != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppTheme.poorColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      assessmentState.errorMessage!,
+                      style: const TextStyle(color: AppTheme.poorColor),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
 
-              ElevatedButton(
-                onPressed: assessmentState.isLoading ? null : _submit,
-                child: assessmentState.isLoading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : const Text('Simpan & Analisis DNA Desa'),
-              ),
-            ],
+                SizedBox(
+                  width: double.infinity,
+                  height: 54,
+                  child: ElevatedButton(
+                    onPressed: assessmentState.isLoading ? null : _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                    ),
+                    child:
+                        assessmentState.isLoading
+                            ? const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                            : Text(
+                              'Simpan & Analisis DNA Desa',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),

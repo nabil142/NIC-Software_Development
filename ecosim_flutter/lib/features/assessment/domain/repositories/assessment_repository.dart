@@ -10,6 +10,7 @@ abstract class AssessmentRepository {
     required int greenSpace,
     required int floodRisk,
     required List<String> existingPrograms,
+    String? potentialProblem,
   });
   Future<AssessmentResponseModel?> getLatestAssessment(String villageId);
 }

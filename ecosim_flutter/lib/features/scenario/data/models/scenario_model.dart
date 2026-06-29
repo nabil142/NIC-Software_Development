@@ -53,12 +53,18 @@ class ScenarioModel {
       projectedResilience: json['projectedResilience'] as int,
       aiAnalysis: json['aiAnalysis'] as String?,
       narrativeText: json['narrativeText'] as String?,
-      baselineDna: json['baseline_dna'] != null 
-          ? DNAScoresModel.fromJson(json['baseline_dna'] as Map<String, dynamic>)
-          : null,
-      projectedDna: json['projected_dna'] != null
-          ? DNAScoresModel.fromJson(json['projected_dna'] as Map<String, dynamic>)
-          : null,
+      baselineDna:
+          json['baseline_dna'] != null
+              ? DNAScoresModel.fromJson(
+                json['baseline_dna'] as Map<String, dynamic>,
+              )
+              : null,
+      projectedDna:
+          json['projected_dna'] != null
+              ? DNAScoresModel.fromJson(
+                json['projected_dna'] as Map<String, dynamic>,
+              )
+              : null,
     );
   }
 

@@ -17,7 +17,6 @@ export interface AssessmentInput {
   existingPrograms: string[];
 }
 
-// Helpers to map raw 1-10 slider values to 0-2 categories for the rule engine logic
 function mapLevel(val: number): number {
   if (val <= 3) return 0;
   if (val <= 7) return 1;
@@ -25,14 +24,14 @@ function mapLevel(val: number): number {
 }
 
 function mapWater(val: number): number {
-  // 10 is Excellent (mapped to 0), 1 is Poor (mapped to 2)
+
   if (val >= 8) return 0;
   if (val >= 4) return 1;
   return 2;
 }
 
 function mapFlood(val: number): number {
-  // 1 is safe (mapped to 0), 10 is severe flooding (mapped to 2)
+
   if (val >= 8) return 2;
   if (val >= 4) return 1;
   return 0;
@@ -49,7 +48,6 @@ export function calculateDNA(raw: AssessmentInput): DNAScores {
     existingPrograms: raw.existingPrograms,
   };
 
-  // 1. Waste Management
   let waste_health: StatusLevel = 'Poor';
   if (a.wasteManagement === 'none') {
     waste_health = a.wasteLevel === 0 ? 'Fair' : 'Poor';
@@ -59,7 +57,6 @@ export function calculateDNA(raw: AssessmentInput): DNAScores {
     waste_health = a.wasteLevel === 2 ? 'Fair' : a.wasteLevel === 1 ? 'Good' : 'Excellent';
   }
 
-  // 2. Water Quality
   let water_health: StatusLevel = 'Poor';
   if (a.waterQuality === 0) {
     water_health = a.riverContaminated ? 'Good' : 'Excellent';
@@ -69,7 +66,6 @@ export function calculateDNA(raw: AssessmentInput): DNAScores {
     water_health = a.riverContaminated ? 'Poor' : 'Fair';
   }
 
-  // 3. Environmental Conservation
   let green_health: StatusLevel = 'Poor';
   if (a.greenSpace === 0) {
     green_health = 'Poor';
@@ -80,7 +76,6 @@ export function calculateDNA(raw: AssessmentInput): DNAScores {
     green_health = hasPenghijauan ? 'Excellent' : 'Good';
   }
 
-  // 4. Disaster Resilience
   let resilience: StatusLevel = 'Poor';
   if (a.floodRisk === 2) {
     resilience = 'Poor';
@@ -128,7 +123,6 @@ export function getDNADetails(raw: AssessmentInput, dna: DNAScores): Record<keyo
     resilience: [],
   };
 
-  // Causes for Waste
   if (a.wasteManagement === 'none') {
     causes.waste_health.push('Belum tersedia sarana TPS atau pembuangan sampah terorganisir.');
   } else if (a.wasteManagement === 'tps') {
@@ -147,7 +141,6 @@ export function getDNADetails(raw: AssessmentInput, dna: DNAScores): Record<keyo
     causes.waste_health.push('Sampah liar tidak terkelola sangat minim/hampir tidak ada.');
   }
 
-  // Causes for Water
   if (a.waterQuality === 2) {
     causes.water_health.push('Sumber air warga sering mengalami kekeruhan atau berbau.');
   } else if (a.waterQuality === 1) {
@@ -162,7 +155,6 @@ export function getDNADetails(raw: AssessmentInput, dna: DNAScores): Record<keyo
     causes.water_health.push('Sungai terdekat dalam kondisi bersih bebas tumpukan limbah.');
   }
 
-  // Causes for Green
   if (a.greenSpace === 0) {
     causes.green_health.push('Tidak ada program penghijauan desa yang berjalan aktif.');
   } else if (a.greenSpace === 1) {
@@ -175,7 +167,6 @@ export function getDNADetails(raw: AssessmentInput, dna: DNAScores): Record<keyo
     causes.green_health.push('Didukung partisipasi warga dalam penanaman pohon mandiri.');
   }
 
-  // Causes for Resilience
   if (a.floodRisk === 2) {
     causes.resilience.push('Desa sering dilanda banjir (lebih dari 2 kali kejadian dalam setahun).');
   } else if (a.floodRisk === 1) {

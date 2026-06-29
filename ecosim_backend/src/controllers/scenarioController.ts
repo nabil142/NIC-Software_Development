@@ -19,7 +19,7 @@ export async function createScenario(req: AuthenticatedRequest, res: Response) {
   }
 
   try {
-    // Verify village
+
     const village = await prisma.village.findFirst({
       where: { id: villageId, userId }
     });
@@ -28,7 +28,6 @@ export async function createScenario(req: AuthenticatedRequest, res: Response) {
       return res.status(403).json({ error: 'Akses ditolak. Desa bukan milik Anda.' });
     }
 
-    // Get latest assessment to derive baseline DNA
     const latestAssessment = await prisma.environmentalAssessment.findFirst({
       where: { villageId },
       orderBy: { createdAt: 'desc' }
@@ -38,14 +37,11 @@ export async function createScenario(req: AuthenticatedRequest, res: Response) {
       return res.status(400).json({ error: 'Desa harus melakukan asesmen terlebih dahulu.' });
     }
 
-    // 1. Calculate baseline DNA
     const { calculateDNA } = require('../services/ruleEngine');
     const baseline = calculateDNA(latestAssessment);
 
-    // 2. Project DNA after programs
     const projected = projectScenario(baseline, selectedPrograms);
 
-    // Save to Neon DB
     const scenario = await prisma.scenario.create({
       data: {
         villageId,
@@ -62,7 +58,6 @@ export async function createScenario(req: AuthenticatedRequest, res: Response) {
       }
     });
 
-    // Map response model to qualitative labels
     const responseScenario = {
       ...scenario,
       baseline_dna: baseline,
@@ -92,7 +87,7 @@ export async function getScenarios(req: AuthenticatedRequest, res: Response) {
   }
 
   try {
-    // Verify village
+
     const village = await prisma.village.findFirst({
       where: { id: villageId, userId }
     });
@@ -106,7 +101,6 @@ export async function getScenarios(req: AuthenticatedRequest, res: Response) {
       orderBy: { createdAt: 'desc' }
     });
 
-    // Map to qualitative labels
     const mappedScenarios = scenarios.map((s) => ({
       ...s,
       baseline_dna: {
@@ -132,20 +126,19 @@ export async function getScenarios(req: AuthenticatedRequest, res: Response) {
 
 export async function runScenarioAnalysis(req: AuthenticatedRequest, res: Response) {
   const userId = req.user?.id;
-  const { id } = req.params; // Active Scenario ID
+  const { id } = req.params;
 
   if (!userId) {
     return res.status(401).json({ error: 'Sesi kedaluwarsa atau tidak terotorisasi.' });
   }
 
   try {
-    // Find active scenario
+
     const activeScenario = await prisma.scenario.findUnique({ where: { id } });
     if (!activeScenario) {
       return res.status(404).json({ error: 'Skenario tidak ditemukan.' });
     }
 
-    // Verify village ownership
     const village = await prisma.village.findFirst({
       where: { id: activeScenario.villageId, userId }
     });
@@ -153,7 +146,6 @@ export async function runScenarioAnalysis(req: AuthenticatedRequest, res: Respon
       return res.status(403).json({ error: 'Akses ditolak.' });
     }
 
-    // Load up to 3 scenarios for comparative analysis
     const list = await prisma.scenario.findMany({
       where: { villageId: village.id },
       orderBy: { createdAt: 'desc' },
@@ -198,7 +190,6 @@ export async function runScenarioAnalysis(req: AuthenticatedRequest, res: Respon
       scenarios: scenariosPayload
     });
 
-    // Update active scenario with the analysis result in Neon DB
     await prisma.scenario.update({
       where: { id },
       data: { aiAnalysis: aiAnalysisResult }
@@ -213,20 +204,19 @@ export async function runScenarioAnalysis(req: AuthenticatedRequest, res: Respon
 
 export async function runScenarioBlueprint(req: AuthenticatedRequest, res: Response) {
   const userId = req.user?.id;
-  const { id } = req.params; // Chosen Scenario ID
+  const { id } = req.params;
 
   if (!userId) {
     return res.status(401).json({ error: 'Sesi kedaluwarsa atau tidak terotorisasi.' });
   }
 
   try {
-    // Find scenario
+
     const chosenScenario = await prisma.scenario.findUnique({ where: { id } });
     if (!chosenScenario) {
       return res.status(404).json({ error: 'Skenario tidak ditemukan.' });
     }
 
-    // Verify village ownership
     const village = await prisma.village.findFirst({
       where: { id: chosenScenario.villageId, userId }
     });
@@ -263,7 +253,6 @@ export async function runScenarioBlueprint(req: AuthenticatedRequest, res: Respo
       analysisText: chosenScenario.aiAnalysis || undefined
     });
 
-    // Update scenario with the narrative text in Neon DB
     await prisma.scenario.update({
       where: { id },
       data: { narrativeText: blueprintResult }

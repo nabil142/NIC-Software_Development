@@ -15,7 +15,7 @@ export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Resp
   }
 
   try {
-    // Check if the user already has a village profile
+
     const existing = await prisma.village.findFirst({
       where: { userId },
       orderBy: { createdAt: 'desc' }
@@ -24,7 +24,7 @@ export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Resp
     let village;
 
     if (existing) {
-      // Update existing village
+
       village = await prisma.village.update({
         where: { id: existing.id },
         data: {
@@ -37,7 +37,7 @@ export async function createOrUpdateVillage(req: AuthenticatedRequest, res: Resp
         }
       });
     } else {
-      // Create new village
+
       village = await prisma.village.create({
         data: {
           userId,

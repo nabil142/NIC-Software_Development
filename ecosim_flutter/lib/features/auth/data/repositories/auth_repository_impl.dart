@@ -59,7 +59,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 }
 
-// Provider
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final remoteDataSource = ref.watch(authRemoteDataSourceProvider);
   return AuthRepositoryImpl(remoteDataSource);

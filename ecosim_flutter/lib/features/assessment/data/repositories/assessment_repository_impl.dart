@@ -20,6 +20,7 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
     required int greenSpace,
     required int floodRisk,
     required List<String> existingPrograms,
+    String? potentialProblem,
   }) async {
     try {
       final response = await _dioClient.dio.post(
@@ -33,12 +34,14 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
           'greenSpace': greenSpace,
           'floodRisk': floodRisk,
           'existingPrograms': existingPrograms,
+          'potentialProblem': potentialProblem,
         },
       );
       final data = response.data as Map<String, dynamic>;
       return AssessmentResponseModel.fromJson(data);
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal mengirim data asesmen.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal mengirim data asesmen.';
       throw Exception(message);
     } catch (e) {
       throw Exception('Kesalahan tidak terduga saat mengirim asesmen: $e');
@@ -56,17 +59,19 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
       return AssessmentResponseModel.fromJson(data);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return null; // No assessment done yet
+        return null;
       }
-      final message = e.response?.data?['error'] ?? 'Gagal memuat asesmen terbaru.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal memuat asesmen terbaru.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat memuat asesmen terbaru: $e');
+      throw Exception(
+        'Kesalahan tidak terduga saat memuat asesmen terbaru: $e',
+      );
     }
   }
 }
 
-// Provider
 final assessmentRepositoryProvider = Provider<AssessmentRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);
   return AssessmentRepositoryImpl(dioClient);

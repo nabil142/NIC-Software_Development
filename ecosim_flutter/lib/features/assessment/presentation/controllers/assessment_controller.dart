@@ -24,7 +24,8 @@ class AssessmentState {
     bool clearAssessment = false,
   }) {
     return AssessmentState(
-      latestAssessment: clearAssessment ? null : (latestAssessment ?? this.latestAssessment),
+      latestAssessment:
+          clearAssessment ? null : (latestAssessment ?? this.latestAssessment),
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isInitialized: isInitialized ?? this.isInitialized,
@@ -40,8 +41,14 @@ class AssessmentNotifier extends StateNotifier<AssessmentState> {
   Future<void> loadLatestAssessment(String villageId) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final assessment = await _assessmentRepository.getLatestAssessment(villageId);
-      state = state.copyWith(latestAssessment: assessment, isLoading: false, isInitialized: true);
+      final assessment = await _assessmentRepository.getLatestAssessment(
+        villageId,
+      );
+      state = state.copyWith(
+        latestAssessment: assessment,
+        isLoading: false,
+        isInitialized: true,
+      );
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -60,6 +67,7 @@ class AssessmentNotifier extends StateNotifier<AssessmentState> {
     required int greenSpace,
     required int floodRisk,
     required List<String> existingPrograms,
+    String? potentialProblem,
   }) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
@@ -72,6 +80,7 @@ class AssessmentNotifier extends StateNotifier<AssessmentState> {
         greenSpace: greenSpace,
         floodRisk: floodRisk,
         existingPrograms: existingPrograms,
+        potentialProblem: potentialProblem,
       );
       state = state.copyWith(latestAssessment: response, isLoading: false);
       return true;
@@ -89,8 +98,8 @@ class AssessmentNotifier extends StateNotifier<AssessmentState> {
   }
 }
 
-// Provider
-final assessmentControllerProvider = StateNotifierProvider<AssessmentNotifier, AssessmentState>((ref) {
-  final repository = ref.watch(assessmentRepositoryProvider);
-  return AssessmentNotifier(repository);
-});
+final assessmentControllerProvider =
+    StateNotifierProvider<AssessmentNotifier, AssessmentState>((ref) {
+      final repository = ref.watch(assessmentRepositoryProvider);
+      return AssessmentNotifier(repository);
+    });

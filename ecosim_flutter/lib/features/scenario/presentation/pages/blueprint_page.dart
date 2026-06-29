@@ -22,20 +22,23 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
       final active = ref.read(scenarioControllerProvider).activeScenario;
       if (active == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pilih skenario aktif terlebih dahulu.')),
+          const SnackBar(
+            content: Text('Pilih skenario aktif terlebih dahulu.'),
+          ),
         );
         context.go('/scenarios');
         return;
       }
-      
+
       if (active.narrativeText == null) {
         ref.read(scenarioControllerProvider.notifier).runAIBlueprint();
       }
     });
   }
 
-  // Calculate budgets dynamically based on program cost categories
-  Map<String, String> _calculateDynamicBudgets(List<String> selectedProgramIds) {
+  Map<String, String> _calculateDynamicBudgets(
+    List<String> selectedProgramIds,
+  ) {
     int minCost = 0;
     int maxCost = 0;
 
@@ -55,22 +58,29 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
       }
     }
 
-    // Default fallback if no programs selected
     if (minCost == 0) {
       minCost = 110000000;
       maxCost = 170000000;
     }
 
-    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp',
+      decimalDigits: 0,
+    );
     return {
       'minCostText': formatter.format(minCost),
       'maxCostText': formatter.format(maxCost),
       'range': '${formatter.format(minCost)} - ${formatter.format(maxCost)}',
       'duration': '12 Bulan',
-      'q1': '${formatter.format((minCost * 0.25).round())} - ${formatter.format((maxCost * 0.25).round())}',
-      'q2': '${formatter.format((minCost * 0.45).round())} - ${formatter.format((maxCost * 0.45).round())}',
-      'q3': '${formatter.format((minCost * 0.15).round())} - ${formatter.format((maxCost * 0.15).round())}',
-      'q4': '${formatter.format((minCost * 0.15).round())} - ${formatter.format((maxCost * 0.15).round())}',
+      'q1':
+          '${formatter.format((minCost * 0.25).round())} - ${formatter.format((maxCost * 0.25).round())}',
+      'q2':
+          '${formatter.format((minCost * 0.45).round())} - ${formatter.format((maxCost * 0.45).round())}',
+      'q3':
+          '${formatter.format((minCost * 0.15).round())} - ${formatter.format((maxCost * 0.15).round())}',
+      'q4':
+          '${formatter.format((minCost * 0.15).round())} - ${formatter.format((maxCost * 0.15).round())}',
     };
   }
 
@@ -89,7 +99,6 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // Icon on left
           Container(
             width: 32,
             height: 32,
@@ -100,7 +109,7 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
             child: Icon(icon, color: const Color(0xFF4C8C5A), size: 16),
           ),
           const SizedBox(width: 10),
-          // Middle content
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +161,7 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
             ),
           ),
           const SizedBox(width: 12),
-          // Percentage pill on right
+
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
@@ -194,12 +203,13 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
               Row(
                 children: [
                   Expanded(
-                    child: index == 0
-                        ? const SizedBox()
-                        : Container(
-                            height: 2,
-                            color: const Color(0xFF4C8C5A),
-                          ),
+                    child:
+                        index == 0
+                            ? const SizedBox()
+                            : Container(
+                              height: 2,
+                              color: const Color(0xFF4C8C5A),
+                            ),
                   ),
                   Container(
                     width: 36,
@@ -209,20 +219,17 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Icon(
-                        icons[index],
-                        color: Colors.white,
-                        size: 18,
-                      ),
+                      child: Icon(icons[index], color: Colors.white, size: 18),
                     ),
                   ),
                   Expanded(
-                    child: index == 3
-                        ? const SizedBox()
-                        : Container(
-                            height: 2,
-                            color: const Color(0xFF4C8C5A),
-                          ),
+                    child:
+                        index == 3
+                            ? const SizedBox()
+                            : Container(
+                              height: 2,
+                              color: const Color(0xFF4C8C5A),
+                            ),
                   ),
                 ],
               ),
@@ -312,26 +319,32 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
             ],
           ),
           const SizedBox(height: 12),
-          ...tasks.map((task) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.check_circle, color: Color(0xFF4C8C5A), size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        task,
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          color: AppTheme.textMedium,
-                          fontWeight: FontWeight.w500,
-                        ),
+          ...tasks.map(
+            (task) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.check_circle,
+                    color: Color(0xFF4C8C5A),
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      task,
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        color: AppTheme.textMedium,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -341,13 +354,14 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
   Widget build(BuildContext context) {
     final scenarioState = ref.watch(scenarioControllerProvider);
     final active = scenarioState.activeScenario;
-    final calculations = _calculateDynamicBudgets(active?.selectedPrograms ?? []);
+    final calculations = _calculateDynamicBudgets(
+      active?.selectedPrograms ?? [],
+    );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F5EF),
       body: Stack(
         children: [
-          // 1. Fading background image at top
           Positioned(
             top: 0,
             left: 0,
@@ -370,17 +384,18 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
             ),
           ),
 
-          // 2. Scrollable Content
           SafeArea(
             child: Column(
               children: [
-                // Custom back button
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 8.0, top: 4.0),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: AppTheme.textDark),
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: AppTheme.textDark,
+                      ),
                       onPressed: () => context.go('/policy-analyst'),
                     ),
                   ),
@@ -391,7 +406,6 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Title Info Header
                         Text(
                           'Blueprint AI',
                           style: GoogleFonts.plusJakartaSans(
@@ -443,9 +457,11 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                             ),
                           ),
                         ] else ...[
-                          // Total Investment & Duration Card
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 16,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(24),
@@ -456,15 +472,17 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                   offset: const Offset(0, 3),
                                 ),
                               ],
-                              border: Border.all(color: Colors.grey.withOpacity(0.12)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.12),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                // Total Investasi Program Column
                                 Expanded(
                                   flex: 7,
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 44,
@@ -484,28 +502,31 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
                                               'Total Investasi',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                color: AppTheme.textDark,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: AppTheme.textDark,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
                                               '${calculations['minCostText']!} -\n${calculations['maxCostText']!}',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                color: AppTheme.textDark,
-                                                fontSize: 13.5,
-                                                fontWeight: FontWeight.bold,
-                                                height: 1.2,
-                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: AppTheme.textDark,
+                                                    fontSize: 13.5,
+                                                    fontWeight: FontWeight.bold,
+                                                    height: 1.2,
+                                                  ),
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
@@ -523,18 +544,21 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                     ],
                                   ),
                                 ),
-                                // Divider
+
                                 Container(
                                   height: 60,
                                   width: 1,
                                   color: Colors.grey.withOpacity(0.15),
-                                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
                                 ),
-                                // Durasi Program Column
+
                                 Expanded(
                                   flex: 5,
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 44,
@@ -554,27 +578,30 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
                                               'Durasi Program',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                color: AppTheme.textDark,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: AppTheme.textDark,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
                                               '12 Bulan',
-                                              style: GoogleFonts.plusJakartaSans(
-                                                color: AppTheme.textDark,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              style:
+                                                  GoogleFonts.plusJakartaSans(
+                                                    color: AppTheme.textDark,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
@@ -597,7 +624,6 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Section: Estimasi Anggaran per Kuartal
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -610,7 +636,9 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                   offset: const Offset(0, 4),
                                 ),
                               ],
-                              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.1),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -672,7 +700,6 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Section: Roadmap Implementasi 12 Bulan (Horizontal Stepper)
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -685,7 +712,9 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                   offset: const Offset(0, 4),
                                 ),
                               ],
-                              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.1),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -705,7 +734,6 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                           ),
                           const SizedBox(height: 24),
 
-                          // Section: Timeline Aktivitas Utama
                           Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
@@ -718,7 +746,9 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                                   offset: const Offset(0, 4),
                                 ),
                               ],
-                              border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                              border: Border.all(
+                                color: Colors.grey.withOpacity(0.1),
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -785,8 +815,17 @@ class _BlueprintPageState extends ConsumerState<BlueprintPage> {
                           const SizedBox(height: 24),
 
                           ElevatedButton.icon(
-                            icon: const Icon(Icons.check_circle_outline, color: Colors.white),
-                            label: const Text('Selesaikan Laporan Akhir', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                            icon: const Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.white,
+                            ),
+                            label: const Text(
+                              'Selesaikan Laporan Akhir',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             onPressed: () => context.go('/summary-report'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF4C8C5A),

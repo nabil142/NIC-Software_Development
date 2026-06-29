@@ -31,14 +31,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       final assessmentState = ref.read(assessmentControllerProvider);
 
       final loggedIn = authState.user != null;
-      final isLoggingIn = state.matchedLocation == '/login' || state.matchedLocation == '/register';
+      final isLoggingIn =
+          state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register';
 
       if (!loggedIn) {
         return isLoggingIn ? null : '/login';
       }
 
-      // If logged in, they must have a village profile.
-      // If they don't, they are forced to go to '/village-profile' to fill it first.
       if (villageState.activeVillage == null && !villageState.isLoading) {
         if (state.matchedLocation != '/village-profile') {
           return '/village-profile';
@@ -46,29 +46,28 @@ final routerProvider = Provider<GoRouter>((ref) {
         return null;
       }
 
-      // Load assessment if active village is loaded but assessment is not initialized
       if (villageState.activeVillage != null &&
           !assessmentState.isInitialized &&
           !assessmentState.isLoading) {
         Future.microtask(() {
-          ref.read(assessmentControllerProvider.notifier).loadLatestAssessment(villageState.activeVillage!.id);
+          ref
+              .read(assessmentControllerProvider.notifier)
+              .loadLatestAssessment(villageState.activeVillage!.id);
         });
         return null;
       }
 
-      // If they have a village profile, they MUST complete the assessment first.
-      // Force redirect to '/assessment' if latestAssessment is null and initialization is complete.
       if (villageState.activeVillage != null &&
           assessmentState.isInitialized &&
           assessmentState.latestAssessment == null &&
           !assessmentState.isLoading) {
-        if (state.matchedLocation != '/assessment' && state.matchedLocation != '/village-profile') {
+        if (state.matchedLocation != '/assessment' &&
+            state.matchedLocation != '/village-profile') {
           return '/assessment';
         }
         return null;
       }
 
-      // If logged in, has village profile, has assessment, and is on auth pages, redirect to dashboard
       if (isLoggingIn) {
         return '/scenarios';
       }
@@ -76,10 +75,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterPage(),
@@ -120,7 +116,6 @@ final routerProvider = Provider<GoRouter>((ref) {
   );
 });
 
-// A helper listenable that triggers rebuilds when the state notifiers update
 class _StateNotifierListenable extends ChangeNotifier {
   final List<StateNotifier> _notifiers;
   final List<RemoveListener> _removeListeners = [];

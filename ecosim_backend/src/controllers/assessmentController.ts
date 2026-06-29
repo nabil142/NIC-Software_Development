@@ -3,6 +3,8 @@ import { AuthenticatedRequest } from '../middlewares/authMiddleware';
 import { prisma } from '../lib/prisma';
 import { calculateDNA, getDNADetails, getDNAInsights } from '../services/ruleEngine';
 
+import { runGeminiAnalysis } from '../services/geminiService';
+
 export async function createAssessment(req: AuthenticatedRequest, res: Response) {
   const userId = req.user?.id;
   const { 
@@ -13,7 +15,8 @@ export async function createAssessment(req: AuthenticatedRequest, res: Response)
     riverContaminated, 
     greenSpace, 
     floodRisk, 
-    existingPrograms 
+    existingPrograms,
+    potentialProblem
   } = req.body;
 
   if (!userId) {
@@ -26,7 +29,7 @@ export async function createAssessment(req: AuthenticatedRequest, res: Response)
   }
 
   try {
-    // Verify that the village belongs to the logged-in user
+
     const village = await prisma.village.findFirst({
       where: { id: villageId, userId }
     });
@@ -35,7 +38,25 @@ export async function createAssessment(req: AuthenticatedRequest, res: Response)
       return res.status(403).json({ error: 'Akses ditolak. Desa bukan milik Anda.' });
     }
 
-    // Save assessment to Neon DB
+    let potentialSolutionAI: string | null = null;
+    if (potentialProblem && potentialProblem.trim().length > 0) {
+      try {
+        potentialSolutionAI = await runGeminiAnalysis({
+          mode: 'potential_solution',
+          village: {
+            name: village.villageName,
+            population: village.population
+          },
+          baseline: { waste_health: 'Fair', water_health: 'Fair', green_health: 'Fair', resilience: 'Fair' },
+          scenarios: [],
+          potentialProblem: potentialProblem.trim()
+        });
+      } catch (aiErr) {
+        console.warn('Gagal memproses solusi AI untuk potensi desa:', aiErr);
+
+      }
+    }
+
     const assessment = await prisma.environmentalAssessment.create({
       data: {
         villageId,
@@ -45,11 +66,12 @@ export async function createAssessment(req: AuthenticatedRequest, res: Response)
         riverContaminated: !!riverContaminated,
         greenSpace: parseInt(greenSpace),
         floodRisk: parseInt(floodRisk),
-        existingPrograms
+        existingPrograms,
+        potentialProblem: potentialProblem?.trim() || null,
+        potentialSolutionAI
       }
     });
 
-    // Run Rule Engine
     const dnaScores = calculateDNA(assessment);
     const dnaDetails = getDNADetails(assessment, dnaScores);
     const dnaInsights = getDNAInsights(dnaScores);
@@ -80,7 +102,7 @@ export async function getLatestAssessment(req: AuthenticatedRequest, res: Respon
   }
 
   try {
-    // Verify village ownership
+
     const village = await prisma.village.findFirst({
       where: { id: villageId, userId }
     });
@@ -98,7 +120,6 @@ export async function getLatestAssessment(req: AuthenticatedRequest, res: Respon
       return res.status(404).json({ error: 'Belum ada data asesmen untuk desa ini.' });
     }
 
-    // Run Rule Engine
     const dnaScores = calculateDNA(assessment);
     const dnaDetails = getDNADetails(assessment, dnaScores);
     const dnaInsights = getDNAInsights(dnaScores);

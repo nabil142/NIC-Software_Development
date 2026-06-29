@@ -2,9 +2,9 @@ class InterventionProgram {
   final String id;
   final String name;
   final String description;
-  final String category; // 'waste' | 'water' | 'green' | 'resilience'
-  final Map<String, String> impacts; // e.g. {'waste_health': 'Strong', ...}
-  final String cost; // 'rendah' | 'sedang' | 'tinggi'
+  final String category;
+  final Map<String, String> impacts;
+  final String cost;
   final int months;
   final String icon;
   final String colorHex;
@@ -34,7 +34,7 @@ final List<InterventionProgram> programsCatalog = [
       'waste_health': 'Strong',
       'water_health': 'None',
       'green_health': 'Moderate',
-      'resilience': 'None'
+      'resilience': 'None',
     },
     cost: 'rendah',
     months: 3,
@@ -51,7 +51,7 @@ final List<InterventionProgram> programsCatalog = [
       'waste_health': 'None',
       'water_health': 'None',
       'green_health': 'Strong',
-      'resilience': 'Moderate'
+      'resilience': 'Moderate',
     },
     cost: 'sedang',
     months: 12,
@@ -62,13 +62,14 @@ final List<InterventionProgram> programsCatalog = [
   InterventionProgram(
     id: 'biopori',
     name: 'Biopori',
-    description: 'Lubang resapan untuk pengolahan air dan meningkatkan kesuburan tanah',
+    description:
+        'Lubang resapan untuk pengolahan air dan meningkatkan kesuburan tanah',
     category: 'water',
     impacts: {
       'waste_health': 'None',
       'water_health': 'Moderate',
       'green_health': 'None',
-      'resilience': 'Strong'
+      'resilience': 'Strong',
     },
     cost: 'rendah',
     months: 2,
@@ -85,7 +86,7 @@ final List<InterventionProgram> programsCatalog = [
       'waste_health': 'None',
       'water_health': 'Moderate',
       'green_health': 'None',
-      'resilience': 'Strong'
+      'resilience': 'Strong',
     },
     cost: 'sedang',
     months: 4,
@@ -102,7 +103,7 @@ final List<InterventionProgram> programsCatalog = [
       'waste_health': 'None',
       'water_health': 'Strong',
       'green_health': 'None',
-      'resilience': 'Moderate'
+      'resilience': 'Moderate',
     },
     cost: 'tinggi',
     months: 18,
@@ -113,13 +114,14 @@ final List<InterventionProgram> programsCatalog = [
   InterventionProgram(
     id: 'komposter_komunal',
     name: 'Komposter Komunal',
-    description: 'Fasilitas pengomposan sampah organik skala desa untuk pertanian dan taman',
+    description:
+        'Fasilitas pengomposan sampah organik skala desa untuk pertanian dan taman',
     category: 'waste',
     impacts: {
       'waste_health': 'Strong',
       'water_health': 'None',
       'green_health': 'Moderate',
-      'resilience': 'None'
+      'resilience': 'None',
     },
     cost: 'rendah',
     months: 2,

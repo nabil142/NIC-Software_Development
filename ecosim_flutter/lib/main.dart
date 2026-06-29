@@ -4,14 +4,9 @@ import 'core/theme/app_theme.dart';
 import 'core/routes/app_router.dart';
 
 void main() {
-  // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
-  
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {

@@ -13,15 +13,16 @@ interface ScenarioPayload {
 }
 
 interface GeminiAnalysisPayload {
-  mode: 'analysis' | 'blueprint';
+  mode: 'analysis' | 'blueprint' | 'potential_solution';
   village: VillagePayload;
   baseline: DNAScores;
   scenarios: ScenarioPayload[];
   analysisText?: string;
+  potentialProblem?: string;
 }
 
 export async function runGeminiAnalysis(payload: GeminiAnalysisPayload): Promise<string> {
-  const { mode, village, baseline, scenarios } = payload;
+  const { mode, village, baseline, scenarios, potentialProblem } = payload;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -30,7 +31,36 @@ export async function runGeminiAnalysis(payload: GeminiAnalysisPayload): Promise
 
   let prompt = "";
 
-  if (mode === "analysis") {
+  if (mode === "potential_solution") {
+    if (!potentialProblem) {
+      throw new Error("Masalah potensi desa tidak diberikan.");
+    }
+    
+    prompt = `Anda adalah AI Konsultan Pemberdayaan Desa dan Ahli Pembangunan Wilayah.
+Tugas Anda adalah memberikan solusi inovatif, langkah penerapan praktis, dan estimasi biaya terkait potensi atau permasalahan desa yang diinputkan pengguna.
+
+Data Desa:
+- Nama Desa: ${village.name}
+- Jumlah Penduduk: ${village.population} jiwa
+
+Permasalahan / Potensi yang Ingin Dikembangkan:
+"${potentialProblem}"
+
+Berikan analisis dan solusi yang objektif, sangat taktis, dan mudah dibaca dengan struktur Markdown berikut secara persis:
+
+## Solusi Pengembangan Potensi Desa
+
+### 💡 Ide Solusi Inovatif
+(Tulis 1-2 paragraf singkat tentang gagasan utama atau rekomendasi solusi terbaik untuk menyelesaikan masalah atau memaksimalkan potensi di atas. Berikan pendekatan yang realistis untuk tingkat desa).
+
+### 📝 Langkah-langkah Penerapan (Tahap Awal)
+(Berikan 3-4 langkah aksi konkrit dan berurutan yang harus dilakukan oleh pemerintah desa atau masyarakat untuk memulai solusi ini, awali setiap poin dengan checklist '- [ ]')
+
+### 💰 Estimasi Kasar Anggaran
+(Berikan perkiraan kasar rentang biaya dalam Rupiah, misal: Rp 10.000.000 - Rp 25.000.000, lalu tambahkan 1 kalimat singkat penjelasan mengapa butuh anggaran tersebut, contoh: "Dana dialokasikan untuk pelatihan warga dan pengadaan bibit/alat awal.")
+
+Jangan gunakan kata pengantar, sapaan pembuka, atau penutup. Langsung mulai dengan judul ## Solusi Pengembangan Potensi Desa.`;
+  } else if (mode === "analysis") {
     if (scenarios.length === 0) {
       throw new Error("Tidak ada skenario untuk dianalisis.");
     }
@@ -106,10 +136,11 @@ Analisis Kelayakan & Prioritas Kebijakan:
 ${payload.analysisText || "Skenario pembangunan layak dijalankan secara bertahap."}
 
 Berdasarkan data di atas, susun rencana kerja taktis 12 bulan yang dibagi ke dalam 4 kuartal (Q1, Q2, Q3, Q4) dengan ketentuan profesional sebagai berikut:
-1. ESTIMASI ANGGARAN DINAMIS: Anda wajib memperkirakan secara cerdas kisaran anggaran (Range Min - Max dalam Rupiah) yang dibutuhkan untuk mendanai poin aksi di setiap kuartal. Estimasi ini harus didasarkan secara logis pada:
-   - Skala populasi desa (desa berpenduduk besar membutuhkan anggaran fasilitas/sosialisasi yang lebih besar).
-   - Kompleksitas program ekologis yang dipilih (program berskala tinggi membutuhkan anggaran infrastruktur fisik yang lebih besar).
-   - Tulis estimasi anggaran kuartal tersebut tepat di baris pertama di bawah judul kuartal dengan format persis: "- Anggaran: Rp [Estimasi Min] - Rp [Estimasi Max]". Gunakan angka riil hasil perhitungan Anda (contoh: "- Anggaran: Rp 12.000.000 - Rp 22.000.000"). JANGAN menyalin mentah-mentah angka dari contoh petunjuk ini!
+1. ESTIMASI ANGGARAN DINAMIS KUSTOM: Anda wajib menghitung perkiraan kisaran anggaran (Range Min - Max dalam Rupiah) secara SPESIFIK dan BERBEDA-BEDA untuk setiap blueprint. Estimasi ini harus didasarkan secara logis pada:
+   - Skala populasi desa (${village.population} jiwa).
+   - Karakteristik dan harga material nyata dari spesifik program yang dipilih (${scenario.programs.join(", ")}).
+   - HARAM HUKUMNYA memberikan angka "template" (misalnya selalu Rp 10jt - Rp 25jt) untuk skenario yang programnya berbeda. Jika programnya pembangunan fisik, harganya harus jauh lebih mahal dari sekadar program sosialisasi.
+   - Tulis estimasi anggaran kuartal tersebut tepat di baris pertama di bawah judul kuartal dengan format persis: "- Anggaran: Rp [Estimasi Min] - Rp [Estimasi Max]".
 2. RENCANA AKSI OPERASIONAL: Berikan tepat 3 (tiga) poin aksi operasional per kuartal. Setiap poin aksi harus ditulis secara singkat, konkret, padat, dan langsung mengarah ke instruksi kerja lapangan dengan BATAS MAKSIMAL 6 KATA per poin aksi. Jangan menulis penjelasan bertele-tele atau paragraf panjang.
 
 Gunakan format struktur Markdown berikut secara persis untuk mempermudah sistem melakukan ekstraksi data visual:

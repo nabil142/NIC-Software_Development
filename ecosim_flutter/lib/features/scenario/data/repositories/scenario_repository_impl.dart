@@ -44,9 +44,12 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
       );
       final data = response.data as Map<String, dynamic>;
       final list = data['scenarios'] as List;
-      return list.map((item) => ScenarioModel.fromJson(item as Map<String, dynamic>)).toList();
+      return list
+          .map((item) => ScenarioModel.fromJson(item as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal memuat daftar skenario.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal memuat daftar skenario.';
       throw Exception(message);
     } catch (e) {
       throw Exception('Kesalahan tidak terduga saat memuat skenario: $e');
@@ -62,7 +65,8 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
       final data = response.data as Map<String, dynamic>;
       return data['result'] as String;
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal menjalankan analisis AI.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal menjalankan analisis AI.';
       throw Exception(message);
     } catch (e) {
       throw Exception('Kesalahan tidak terduga saat analisis AI: $e');
@@ -78,7 +82,8 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
       final data = response.data as Map<String, dynamic>;
       return data['result'] as String;
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal menyusun cetak biru AI.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal menyusun cetak biru AI.';
       throw Exception(message);
     } catch (e) {
       throw Exception('Kesalahan tidak terduga saat cetak biru AI: $e');
@@ -86,7 +91,6 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
   }
 }
 
-// Provider
 final scenarioRepositoryProvider = Provider<ScenarioRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);
   return ScenarioRepositoryImpl(dioClient);

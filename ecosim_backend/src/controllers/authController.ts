@@ -13,17 +13,15 @@ export async function register(req: Request, res: Response) {
   }
 
   try {
-    // Check if email already registered
+
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
       return res.status(409).json({ error: 'Email sudah terdaftar.' });
     }
 
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
-    // Create user in Neon DB
     const user = await prisma.user.create({
       data: {
         email,
@@ -31,7 +29,6 @@ export async function register(req: Request, res: Response) {
       },
     });
 
-    // Create JWT Token
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
 
     return res.status(201).json({
@@ -53,19 +50,17 @@ export async function login(req: Request, res: Response) {
   }
 
   try {
-    // Find user
+
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: 'Email atau password salah.' });
     }
 
-    // Match password
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Email atau password salah.' });
     }
 
-    // Create JWT Token
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
 
     return res.status(200).json({

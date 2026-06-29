@@ -103,13 +103,17 @@ class ScenarioNotifier extends StateNotifier<ScenarioState> {
   Future<bool> runAIAnalysis() async {
     final active = state.activeScenario;
     if (active == null) {
-      state = state.copyWith(errorMessage: 'Tidak ada skenario aktif terpilih.');
+      state = state.copyWith(
+        errorMessage: 'Tidak ada skenario aktif terpilih.',
+      );
       return false;
     }
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final resultText = await _scenarioRepository.runScenarioAnalysis(active.id);
-      
+      final resultText = await _scenarioRepository.runScenarioAnalysis(
+        active.id,
+      );
+
       final updatedActive = ScenarioModel(
         id: active.id,
         villageId: active.villageId,
@@ -129,7 +133,10 @@ class ScenarioNotifier extends StateNotifier<ScenarioState> {
         projectedDna: active.projectedDna,
       );
 
-      final updatedList = state.scenarios.map((s) => s.id == active.id ? updatedActive : s).toList();
+      final updatedList =
+          state.scenarios
+              .map((s) => s.id == active.id ? updatedActive : s)
+              .toList();
       state = state.copyWith(
         scenarios: updatedList,
         activeScenario: updatedActive,
@@ -148,13 +155,17 @@ class ScenarioNotifier extends StateNotifier<ScenarioState> {
   Future<bool> runAIBlueprint() async {
     final active = state.activeScenario;
     if (active == null) {
-      state = state.copyWith(errorMessage: 'Tidak ada skenario aktif terpilih.');
+      state = state.copyWith(
+        errorMessage: 'Tidak ada skenario aktif terpilih.',
+      );
       return false;
     }
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
-      final resultText = await _scenarioRepository.runScenarioBlueprint(active.id);
-      
+      final resultText = await _scenarioRepository.runScenarioBlueprint(
+        active.id,
+      );
+
       final updatedActive = ScenarioModel(
         id: active.id,
         villageId: active.villageId,
@@ -174,7 +185,10 @@ class ScenarioNotifier extends StateNotifier<ScenarioState> {
         projectedDna: active.projectedDna,
       );
 
-      final updatedList = state.scenarios.map((s) => s.id == active.id ? updatedActive : s).toList();
+      final updatedList =
+          state.scenarios
+              .map((s) => s.id == active.id ? updatedActive : s)
+              .toList();
       state = state.copyWith(
         scenarios: updatedList,
         activeScenario: updatedActive,
@@ -195,8 +209,8 @@ class ScenarioNotifier extends StateNotifier<ScenarioState> {
   }
 }
 
-// Provider
-final scenarioControllerProvider = StateNotifierProvider<ScenarioNotifier, ScenarioState>((ref) {
-  final repository = ref.watch(scenarioRepositoryProvider);
-  return ScenarioNotifier(repository);
-});
+final scenarioControllerProvider =
+    StateNotifierProvider<ScenarioNotifier, ScenarioState>((ref) {
+      final repository = ref.watch(scenarioRepositoryProvider);
+      return ScenarioNotifier(repository);
+    });

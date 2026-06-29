@@ -34,7 +34,8 @@ class VillageRepositoryImpl implements VillageRepository {
       final data = response.data as Map<String, dynamic>;
       return VillageModel.fromJson(data['village'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal menyimpan profil desa.';
+      final message =
+          e.response?.data?['error'] ?? 'Gagal menyimpan profil desa.';
       throw Exception(message);
     } catch (e) {
       throw Exception('Kesalahan tidak terduga saat menyimpan profil desa: $e');
@@ -50,7 +51,7 @@ class VillageRepositoryImpl implements VillageRepository {
       return VillageModel.fromJson(data['village'] as Map<String, dynamic>);
     } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
-        return null; // Profile not configured yet
+        return null;
       }
       final message = e.response?.data?['error'] ?? 'Gagal memuat profil desa.';
       throw Exception(message);
@@ -60,7 +61,6 @@ class VillageRepositoryImpl implements VillageRepository {
   }
 }
 
-// Provider
 final villageRepositoryProvider = Provider<VillageRepository>((ref) {
   final dioClient = ref.watch(dioClientProvider);
   return VillageRepositoryImpl(dioClient);

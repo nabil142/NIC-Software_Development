@@ -29,13 +29,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final success = await ref.read(authControllerProvider.notifier).login(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
+    final success = await ref
+        .read(authControllerProvider.notifier)
+        .login(_emailController.text.trim(), _passwordController.text.trim());
 
     if (success && mounted) {
-      // Reload active village profile using the new credentials
       ref.read(villageControllerProvider.notifier).loadActiveVillage();
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,7 +52,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image with fallback gradient
           Positioned.fill(
             child: Image.asset(
               'assets/images/tea_garden.png',
@@ -72,13 +69,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               },
             ),
           ),
-          // Dark overlay to ensure text contrast
+
           Positioned.fill(
-            child: Container(
-              color: Colors.black.withOpacity(0.3),
-            ),
+            child: Container(color: Colors.black.withOpacity(0.3)),
           ),
-          // Content
+
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -109,28 +104,45 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       const SizedBox(height: 40),
 
-                      // Email input field
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: 'johndoe@gmail.com',
-                          hintStyle: GoogleFonts.inter(color: Colors.white60, fontSize: 14),
+                          hintStyle: GoogleFonts.inter(
+                            color: Colors.white60,
+                            fontSize: 14,
+                          ),
                           fillColor: Colors.white.withOpacity(0.15),
                           filled: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.white, width: 1),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 1,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.white.withOpacity(0.6), width: 1),
+                            borderSide: BorderSide(
+                              color: Colors.white.withOpacity(0.6),
+                              width: 1,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 1.5,
+                            ),
                           ),
                         ),
                         validator: (val) {
@@ -145,17 +157,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Password input field
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        style: GoogleFonts.inter(color: Colors.white, fontSize: 14),
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: '***********',
-                          hintStyle: GoogleFonts.inter(color: Colors.white60, fontSize: 14),
+                          hintStyle: GoogleFonts.inter(
+                            color: Colors.white60,
+                            fontSize: 14,
+                          ),
                           fillColor: Colors.white.withOpacity(0.15),
                           filled: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 16,
+                          ),
                           suffixIcon: Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: IconButton(
@@ -175,15 +195,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.white, width: 1),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 1,
+                            ),
                           ),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(color: Colors.white.withOpacity(0.6), width: 1),
+                            borderSide: BorderSide(
+                              color: Colors.white.withOpacity(0.6),
+                              width: 1,
+                            ),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Colors.white, width: 1.5),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                              width: 1.5,
+                            ),
                           ),
                         ),
                         validator: (val) {
@@ -197,7 +226,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         },
                       ),
 
-                      // Forgot password placeholder
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
@@ -210,7 +238,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           child: Text(
                             'Lupa Password?',
                             style: GoogleFonts.inter(
-                              fontSize: 12, 
+                              fontSize: 12,
                               color: Colors.white.withOpacity(0.8),
                               fontWeight: FontWeight.w500,
                             ),
@@ -219,7 +247,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Error Banner
                       if (authState.errorMessage != null) ...[
                         Container(
                           padding: const EdgeInsets.all(12),
@@ -229,18 +256,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           child: Text(
                             authState.errorMessage!,
-                            style: const TextStyle(color: Colors.white, fontSize: 13),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
                         const SizedBox(height: 16),
                       ],
 
-                      // Login "Next" Button
                       ElevatedButton(
                         onPressed: authState.isLoading ? null : _submit,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF507E5D), // Premium green matching the design mockup
+                          backgroundColor: const Color(0xFF507E5D),
                           foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 50),
                           elevation: 0,
@@ -248,42 +277,57 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: authState.isLoading
-                            ? const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        child:
+                            authState.isLoading
+                                ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                                : Text(
+                                  'Next',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              )
-                            : Text(
-                                'Next',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                       ),
                       const SizedBox(height: 24),
 
-                      // Divider "Atau"
                       Row(
                         children: [
-                          Expanded(child: Divider(color: Colors.white.withOpacity(0.3))),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              'Atau',
-                              style: GoogleFonts.inter(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w500),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.white.withOpacity(0.3),
                             ),
                           ),
-                          Expanded(child: Divider(color: Colors.white.withOpacity(0.3))),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            child: Text(
+                              'Atau',
+                              style: GoogleFonts.inter(
+                                color: Colors.white70,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Divider(
+                              color: Colors.white.withOpacity(0.3),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
 
-                      // Google Login Button
                       OutlinedButton(
                         onPressed: () {},
                         style: OutlinedButton.styleFrom(
@@ -302,10 +346,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/24px-Google_%22G%22_logo.svg.png',
                               width: 20,
                               height: 20,
-                              errorBuilder: (context, error, stackTrace) => const Text(
-                                'G ',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue, fontSize: 18),
-                              ),
+                              errorBuilder:
+                                  (context, error, stackTrace) => const Text(
+                                    'G ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                      fontSize: 18,
+                                    ),
+                                  ),
                             ),
                             const SizedBox(width: 12),
                             Text(
@@ -321,7 +370,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       ),
                       const SizedBox(height: 36),
 
-                      // Register link
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -334,7 +382,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             child: Text(
                               'Daftar',
                               style: GoogleFonts.plusJakartaSans(
-                                color: const Color(0xFF42BD62), // Bright green for link highlights
+                                color: const Color(0xFF42BD62),
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
                               ),

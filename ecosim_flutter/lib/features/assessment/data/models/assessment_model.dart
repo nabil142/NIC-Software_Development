@@ -8,6 +8,8 @@ class AssessmentModel {
   final int greenSpace;
   final int floodRisk;
   final List<String> existingPrograms;
+  final String? potentialProblem;
+  final String? potentialSolutionAI;
 
   AssessmentModel({
     required this.id,
@@ -19,6 +21,8 @@ class AssessmentModel {
     required this.greenSpace,
     required this.floodRisk,
     required this.existingPrograms,
+    this.potentialProblem,
+    this.potentialSolutionAI,
   });
 
   factory AssessmentModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,8 @@ class AssessmentModel {
       greenSpace: json['greenSpace'] as int,
       floodRisk: json['floodRisk'] as int,
       existingPrograms: List<String>.from(json['existingPrograms'] as List),
+      potentialProblem: json['potentialProblem'] as String?,
+      potentialSolutionAI: json['potentialSolutionAI'] as String?,
     );
   }
 
@@ -46,6 +52,8 @@ class AssessmentModel {
       'greenSpace': greenSpace,
       'floodRisk': floodRisk,
       'existingPrograms': existingPrograms,
+      'potentialProblem': potentialProblem,
+      'potentialSolutionAI': potentialSolutionAI,
     };
   }
 }
@@ -108,10 +116,18 @@ class DNADetailsModel {
 
   factory DNADetailsModel.fromJson(Map<String, dynamic> json) {
     return DNADetailsModel(
-      wasteHealth: DNADetailItem.fromJson(json['waste_health'] as Map<String, dynamic>),
-      waterHealth: DNADetailItem.fromJson(json['water_health'] as Map<String, dynamic>),
-      greenHealth: DNADetailItem.fromJson(json['green_health'] as Map<String, dynamic>),
-      resilience: DNADetailItem.fromJson(json['resilience'] as Map<String, dynamic>),
+      wasteHealth: DNADetailItem.fromJson(
+        json['waste_health'] as Map<String, dynamic>,
+      ),
+      waterHealth: DNADetailItem.fromJson(
+        json['water_health'] as Map<String, dynamic>,
+      ),
+      greenHealth: DNADetailItem.fromJson(
+        json['green_health'] as Map<String, dynamic>,
+      ),
+      resilience: DNADetailItem.fromJson(
+        json['resilience'] as Map<String, dynamic>,
+      ),
     );
   }
 }
@@ -154,12 +170,21 @@ class AssessmentResponseModel {
 
   factory AssessmentResponseModel.fromJson(Map<String, dynamic> json) {
     return AssessmentResponseModel(
-      assessment: AssessmentModel.fromJson(json['assessment'] as Map<String, dynamic>),
-      dnaScores: DNAScoresModel.fromJson(json['dnaScores'] as Map<String, dynamic>),
-      dnaDetails: DNADetailsModel.fromJson(json['dnaDetails'] as Map<String, dynamic>),
-      dnaInsights: (json['dnaInsights'] as List)
-          .map((item) => DNAInsightItem.fromJson(item as Map<String, dynamic>))
-          .toList(),
+      assessment: AssessmentModel.fromJson(
+        json['assessment'] as Map<String, dynamic>,
+      ),
+      dnaScores: DNAScoresModel.fromJson(
+        json['dnaScores'] as Map<String, dynamic>,
+      ),
+      dnaDetails: DNADetailsModel.fromJson(
+        json['dnaDetails'] as Map<String, dynamic>,
+      ),
+      dnaInsights:
+          (json['dnaInsights'] as List)
+              .map(
+                (item) => DNAInsightItem.fromJson(item as Map<String, dynamic>),
+              )
+              .toList(),
     );
   }
 }

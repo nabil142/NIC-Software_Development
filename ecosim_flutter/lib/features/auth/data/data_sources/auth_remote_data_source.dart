@@ -13,20 +13,14 @@ class AuthRemoteDataSource {
     try {
       final response = await _dioClient.dio.post(
         ApiEndpoints.login,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
-      
+
       final data = response.data as Map<String, dynamic>;
       final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
       final token = data['token'] as String;
 
-      return {
-        'user': user,
-        'token': token,
-      };
+      return {'user': user, 'token': token};
     } on DioException catch (e) {
       final message = e.response?.data?['error'] ?? 'Gagal masuk sistem.';
       throw Exception(message);
@@ -39,20 +33,14 @@ class AuthRemoteDataSource {
     try {
       final response = await _dioClient.dio.post(
         ApiEndpoints.register,
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: {'email': email, 'password': password},
       );
-      
+
       final data = response.data as Map<String, dynamic>;
       final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
       final token = data['token'] as String;
 
-      return {
-        'user': user,
-        'token': token,
-      };
+      return {'user': user, 'token': token};
     } on DioException catch (e) {
       final message = e.response?.data?['error'] ?? 'Gagal mendaftarkan akun.';
       throw Exception(message);
@@ -62,7 +50,6 @@ class AuthRemoteDataSource {
   }
 }
 
-// Provider
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
   final dioClient = ref.watch(dioClientProvider);
   return AuthRemoteDataSource(dioClient);

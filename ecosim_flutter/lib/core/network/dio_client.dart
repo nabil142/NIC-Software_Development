@@ -6,17 +6,18 @@ import 'api_endpoints.dart';
 class DioClient {
   final Dio _dio;
 
-  DioClient() : _dio = Dio(
-    BaseOptions(
-      baseUrl: ApiEndpoints.baseUrl,
-      connectTimeout: const Duration(seconds: 30), // 30s to allow Gemini AI processing
-      receiveTimeout: const Duration(seconds: 30),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    ),
-  ) {
+  DioClient()
+    : _dio = Dio(
+        BaseOptions(
+          baseUrl: ApiEndpoints.baseUrl,
+          connectTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      ) {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -28,8 +29,9 @@ class DioClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
-          // Handle common HTTP errors or log them
-          print('API Error [${e.response?.statusCode}]: ${e.response?.data ?? e.message}');
+          print(
+            'API Error [${e.response?.statusCode}]: ${e.response?.data ?? e.message}',
+          );
           return handler.next(e);
         },
       ),
@@ -39,7 +41,6 @@ class DioClient {
   Dio get dio => _dio;
 }
 
-// Provider for DioClient
 final dioClientProvider = Provider<DioClient>((ref) {
   return DioClient();
 });

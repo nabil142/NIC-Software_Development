@@ -25,7 +25,8 @@ class VillageState {
     bool clearVillage = false,
   }) {
     return VillageState(
-      activeVillage: clearVillage ? null : (activeVillage ?? this.activeVillage),
+      activeVillage:
+          clearVillage ? null : (activeVillage ?? this.activeVillage),
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isInitialized: isInitialized ?? this.isInitialized,
@@ -44,15 +45,22 @@ class VillageNotifier extends StateNotifier<VillageState> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
     if (token == null) {
-      // Not logged in yet, so do not perform the API call to avoid 401 errors
-      state = state.copyWith(isLoading: false, isInitialized: true, errorMessage: null);
+      state = state.copyWith(
+        isLoading: false,
+        isInitialized: true,
+        errorMessage: null,
+      );
       return;
     }
 
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {
       final village = await _villageRepository.getActiveVillage();
-      state = state.copyWith(activeVillage: village, isLoading: false, isInitialized: true);
+      state = state.copyWith(
+        activeVillage: village,
+        isLoading: false,
+        isInitialized: true,
+      );
     } catch (e) {
       final errStr = e.toString().replaceAll('Exception: ', '');
       state = state.copyWith(
@@ -97,8 +105,8 @@ class VillageNotifier extends StateNotifier<VillageState> {
   }
 }
 
-// Provider
-final villageControllerProvider = StateNotifierProvider<VillageNotifier, VillageState>((ref) {
-  final repository = ref.watch(villageRepositoryProvider);
-  return VillageNotifier(repository);
-});
+final villageControllerProvider =
+    StateNotifierProvider<VillageNotifier, VillageState>((ref) {
+      final repository = ref.watch(villageRepositoryProvider);
+      return VillageNotifier(repository);
+    });
