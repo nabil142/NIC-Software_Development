@@ -97,7 +97,7 @@ class AuthRemoteDataSource {
     try {
       // 1. Coba login (jika akun sudah ada)
       try {
-        final loginResponse = await _dio.post(
+        final loginResponse = await _dioClient.dio.post(
           ApiEndpoints.login,
           data: {'email': email, 'password': 'apple_sso_$appleId'},
         );
@@ -109,7 +109,7 @@ class AuthRemoteDataSource {
       }
 
       // 2. Jika gagal login (akun belum ada), lakukan register
-      final registerResponse = await _dio.post(
+      final registerResponse = await _dioClient.dio.post(
         ApiEndpoints.register,
         data: {'email': email, 'password': 'apple_sso_$appleId'},
       );
@@ -131,7 +131,7 @@ class AuthRemoteDataSource {
 
   Future<void> deleteAccount() async {
     try {
-      await _dio.delete('/api/auth/account');
+      await _dioClient.dio.delete('/api/auth/account');
     } on DioException catch (e) {
       throw Exception(e.response?.data['error'] ?? 'Gagal menghapus akun.');
     } catch (e) {
