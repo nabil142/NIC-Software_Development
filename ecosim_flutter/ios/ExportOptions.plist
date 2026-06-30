@@ -8,5 +8,10 @@
 	<string>HG5R685ZKM</string>
 	<key>signingStyle</key>
 	<string>manual</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.ecosim.ecosimFlutter</key>
+		<string>EcoSim App Store</string>
+	</dict>
 </dict>
 </plist>
