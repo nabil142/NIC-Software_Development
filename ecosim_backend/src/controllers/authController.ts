@@ -73,3 +73,24 @@ export async function login(req: Request, res: Response) {
     return res.status(500).json({ error: err.message || 'Gagal masuk sistem.' });
   }
 }
+
+export async function deleteAccount(req: Request, res: Response) {
+  // @ts-ignore - req.user is populated by authMiddleware
+  const userId = req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ error: 'Tidak ada akses untuk menghapus akun.' });
+  }
+
+  try {
+    // Karena onDelete: Cascade, menghapus User akan menghapus Village, Assessment, dll
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return res.status(200).json({ message: 'Akun berhasil dihapus permanen.' });
+  } catch (err: any) {
+    console.error('Error saat menghapus akun:', err);
+    return res.status(500).json({ error: err.message || 'Gagal menghapus akun.' });
+  }
+}

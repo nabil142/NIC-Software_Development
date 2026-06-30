@@ -48,6 +48,7 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   connectivity_plus: ^7.2.0
   google_sign_in: ^6.2.1
+  sign_in_with_apple: ^7.0.1
 
 dev_dependencies:
   flutter_test:

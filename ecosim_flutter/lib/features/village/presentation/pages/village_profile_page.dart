@@ -416,8 +416,70 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                                             color: Colors.white,
                                           ),
                                         ),
+                                          ),
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  side: const BorderSide(
+                                    color: Colors.red,
+                                    width: 1.5,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text('Hapus Akun Permanen?', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.bold, color: Colors.red)),
+                                      content: const Text('Tindakan ini tidak dapat dibatalkan. Semua data desa, asesmen, dan skenario Anda akan dihapus permanen dari sistem kami. Apakah Anda yakin?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(ctx),
+                                          child: const Text('Batal', style: TextStyle(color: Colors.black87)),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            Navigator.pop(ctx);
+                                            final success = await ref.read(authControllerProvider.notifier).deleteAccount();
+                                            if (success && mounted) {
+                                              ref.read(villageControllerProvider.notifier).clear();
+                                              ref.read(assessmentControllerProvider.notifier).clear();
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Akun berhasil dihapus.'), backgroundColor: Colors.green),
+                                              );
+                                            } else if (mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Gagal menghapus akun.'), backgroundColor: Colors.red),
+                                              );
+                                            }
+                                          },
+                                          child: const Text('Hapus Permanen', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  'Hapus Akun Permanen',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ),
+
                             const SizedBox(height: 32),
                           ],
                         ),

@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { register, login } from './controllers/authController';
+import { register, login, deleteAccount } from './controllers/authController';
 import { createOrUpdateVillage, getActiveVillage } from './controllers/villageController';
 import { createAssessment, getLatestAssessment } from './controllers/assessmentController';
 import { createScenario, getScenarios, runScenarioAnalysis, runScenarioBlueprint } from './controllers/scenarioController';
@@ -27,6 +27,7 @@ app.use(express.json());
 
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
+app.delete('/api/auth/account', authMiddleware as any, deleteAccount as any);
 
 app.post('/api/villages', authMiddleware as any, createOrUpdateVillage as any);
 app.get('/api/villages/active', authMiddleware as any, getActiveVillage as any);

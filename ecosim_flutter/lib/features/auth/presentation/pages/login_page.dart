@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'dart:io' show Platform;
 import '../../../../core/theme/app_theme.dart';
 import '../controllers/auth_controller.dart';
 import '../../../village/presentation/controllers/village_controller.dart';
@@ -399,6 +401,52 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ],
                         ),
                       ),
+                      if (Platform.isIOS || Platform.isMacOS) ...[
+                        const SizedBox(height: 16),
+                        SignInWithAppleButton(
+                          onPressed: authState.isLoading ? () {} : () async {
+                            try {
+                              final credential = await SignInWithApple.getAppleIDCredential(
+                                scopes: [
+                                  AppleIDAuthorizationScopes.email,
+                                  AppleIDAuthorizationScopes.fullName,
+                                ],
+                              );
+
+                              final email = credential.email ?? 'apple_user@apple.com'; // Apple only sends email on first sign-in
+                              final name = credential.givenName != null 
+                                  ? '${credential.givenName} ${credential.familyName}'
+                                  : 'Apple User';
+
+                              final success = await ref
+                                  .read(authControllerProvider.notifier)
+                                  .loginWithApple(email, name, credential.userIdentifier!);
+
+                              if (success && mounted) {
+                                ref.read(villageControllerProvider.notifier).loadActiveVillage();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Login Apple berhasil! Selamat datang.'),
+                                    backgroundColor: AppTheme.excellentColor,
+                                  ),
+                                );
+                              }
+                            } catch (e) {
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Login Apple dibatalkan atau gagal: $e'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          style: SignInWithAppleButtonStyle.white,
+                          borderRadius: const BorderRadius.all(Radius.circular(12)),
+                          height: 50,
+                        ),
+                      ],
                       const SizedBox(height: 36),
 
                       Row(

@@ -78,6 +78,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<bool> loginWithApple(String email, String displayName, String appleId) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final user = await _authRepository.loginWithApple(email, displayName, appleId);
+      state = state.copyWith(user: user, isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> deleteAccount() async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      await _authRepository.deleteAccount();
+      state = state.copyWith(clearUser: true, isInitialized: true, isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
   Future<bool> register(String email, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {

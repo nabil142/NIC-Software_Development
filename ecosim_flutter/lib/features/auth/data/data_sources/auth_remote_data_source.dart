@@ -92,6 +92,52 @@ class AuthRemoteDataSource {
       );
     }
   }
+
+  Future<Map<String, dynamic>> loginWithApple(String email, String displayName, String appleId) async {
+    try {
+      // 1. Coba login (jika akun sudah ada)
+      try {
+        final loginResponse = await _dio.post(
+          ApiEndpoints.login,
+          data: {'email': email, 'password': 'apple_sso_$appleId'},
+        );
+        return loginResponse.data['user'];
+      } on DioException catch (e) {
+        if (e.response?.statusCode != 401) {
+          rethrow; // Lempar jika bukan error autentikasi
+        }
+      }
+
+      // 2. Jika gagal login (akun belum ada), lakukan register
+      final registerResponse = await _dio.post(
+        ApiEndpoints.register,
+        data: {'email': email, 'password': 'apple_sso_$appleId'},
+      );
+
+      return registerResponse.data['user'];
+    } on DioException catch (e) {
+      print('DioException in loginWithApple: ${e.response?.data}');
+      throw Exception(
+        e.response?.data['error'] ??
+          'Gagal sinkronisasi akun Apple. Silakan coba lagi.';
+      );
+    } catch (e) {
+      print('Exception in loginWithApple: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat Apple Sign-In. Silakan coba lagi nanti.',
+      );
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    try {
+      await _dio.delete('/api/auth/account');
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['error'] ?? 'Gagal menghapus akun.');
+    } catch (e) {
+      throw Exception('Terjadi kesalahan tidak terduga saat menghapus akun.');
+    }
+  }
 }
 
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
