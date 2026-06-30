@@ -43,6 +43,11 @@ jobs:
       - name: Debug Keychain Identities
         run: security find-identity -v -p codesigning
 
+      - name: Setup Xcode version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
       - name: Build iOS IPA (Release)
         working-directory: ecosim_flutter
         run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
