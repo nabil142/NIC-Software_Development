@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ecosim-android-apk
-          path: ecosim_flutter/build/app/outputs/flutter-apk/app-release.apk
+          path: ecosim_flutter/build/app/outputs/flutter-apk/*.apk
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4

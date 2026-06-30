@@ -39,19 +39,16 @@ android {
                 storePassword = "ecosim123"
                 keyAlias = "upload"
                 keyPassword = "ecosim123"
-            } else {
-                // Fallback to debug keystore for CI/CD if release keystore is missing
-                storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
             }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            val keystoreFile = file("upload-keystore.jks")
+            if (keystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }
