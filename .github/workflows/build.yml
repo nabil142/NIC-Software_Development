@@ -40,6 +40,9 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           echo "${{ secrets.IOS_PROVISION_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
+      - name: Debug Keychain Identities
+        run: security find-identity -v -p codesigning
+
       - name: Build iOS IPA (Release)
         working-directory: ecosim_flutter
         run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
