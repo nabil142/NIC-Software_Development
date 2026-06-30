@@ -605,26 +605,31 @@ class _ScenarioListPageState extends ConsumerState<ScenarioListPage> {
                   ),
                 ),
 
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border(
-                      top: BorderSide(
-                        color: Colors.grey.withOpacity(0.15),
-                        width: 1,
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 30,
+                    top: 10,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                      border: Border.all(
+                        color: const Color(0xFF67B05C),
+                        width: 1.5,
                       ),
                     ),
-                  ),
-                  child: SafeArea(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildNavItem(0, Icons.home_outlined, Icons.home),
                         _buildNavItem(
                           1,
-                          Icons.settings_outlined,
-                          Icons.settings,
+                          Icons.hexagon_outlined,
+                          Icons.hexagon,
                         ),
                         _buildNavItem(
                           2,
@@ -646,7 +651,7 @@ class _ScenarioListPageState extends ConsumerState<ScenarioListPage> {
 
   Widget _buildNavItem(int index, IconData outline, IconData solid) {
     final isActive = _currentNavIndex == index;
-    final color = isActive ? const Color(0xFF3E6D4E) : Colors.grey;
+    final color = isActive ? const Color(0xFF3E6D4E) : Colors.black87;
 
     return GestureDetector(
       onTap: () {

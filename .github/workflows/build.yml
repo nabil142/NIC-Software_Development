@@ -27,15 +27,22 @@ jobs:
         working-directory: ecosim_flutter
         run: flutter build apk --release
 
-      - name: Build iOS IPA (No Code Signing)
-        working-directory: ecosim_flutter
-        # We build ios without code signing so it generates an IPA that can be sideloaded (with dev account or tools)
+      - name: Install Apple Certificate
+        if: github.ref == 'refs/heads/main'
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.IOS_P12_BASE64 }}
+          p12-password: ${{ secrets.IOS_P12_PASSWORD }}
+
+      - name: Install Provisioning Profile
+        if: github.ref == 'refs/heads/main'
         run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cp -r Runner.app Payload/
-          zip -r app.ipa Payload
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISION_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+
+      - name: Build iOS IPA (Release)
+        working-directory: ecosim_flutter
+        run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
           
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
@@ -43,8 +50,16 @@ jobs:
           name: ecosim-android-apk
           path: ecosim_flutter/build/app/outputs/flutter-apk/app-release.apk
 
-      - name: Upload iOS IPA
+      - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ecosim-ios-ipa
-          path: ecosim_flutter/build/ios/iphoneos/app.ipa
+          path: ecosim_flutter/build/ios/ipa/*.ipa
+
+      - name: Upload to TestFlight
+        if: github.ref == 'refs/heads/main'
+        working-directory: ecosim_flutter
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys/
+          echo "${{ secrets.APPSTORE_P8_BASE64 }}" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
+          xcrun altool --upload-app -f build/ios/ipa/*.ipa -t ios --apiKey "${{ secrets.APPSTORE_KEY_ID }}" --apiIssuer "${{ secrets.APPSTORE_ISSUER_ID }}"
