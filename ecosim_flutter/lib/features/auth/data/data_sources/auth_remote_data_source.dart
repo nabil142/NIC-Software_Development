@@ -119,7 +119,7 @@ class AuthRemoteDataSource {
       print('DioException in loginWithApple: ${e.response?.data}');
       throw Exception(
         e.response?.data['error'] ??
-          'Gagal sinkronisasi akun Apple. Silakan coba lagi.';
+          'Gagal sinkronisasi akun Apple. Silakan coba lagi.',
       );
     } catch (e) {
       print('Exception in loginWithApple: $e');

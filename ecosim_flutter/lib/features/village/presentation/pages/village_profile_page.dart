@@ -416,7 +416,6 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
                                             color: Colors.white,
                                           ),
                                         ),
-                                          ),
                               ),
                             ),
                             const SizedBox(height: 16),
