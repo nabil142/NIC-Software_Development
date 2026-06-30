@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>971440533967-n2raq982ejaobdi6925rv4slnig2llho.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.971440533967-n2raq982ejaobdi6925rv4slnig2llho</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>971440533967-078eb5otrqc8tsb7816u49jolv25e877.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCT1I90Xd8EPVmqA4vr56E7UyqvQZVw4jM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>971440533967</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ecosim.ecosimFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>ecosim-development</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ecosim-development.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:971440533967:ios:3e046fbb22236c9a74a2ba</string>
+</dict>
+</plist>
