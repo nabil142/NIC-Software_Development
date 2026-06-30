@@ -22,10 +22,15 @@ class AuthRemoteDataSource {
 
       return {'user': user, 'token': token};
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal masuk sistem.';
+      final message =
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal masuk sistem. Silakan periksa kredensial Anda.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat masuk sistem: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat masuk sistem. Silakan coba lagi nanti.',
+      );
     }
   }
 
@@ -42,10 +47,49 @@ class AuthRemoteDataSource {
 
       return {'user': user, 'token': token};
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal mendaftarkan akun.';
+      final message =
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal mendaftarkan akun. Silakan periksa kembali data Anda.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat registrasi: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat registrasi. Silakan coba lagi nanti.',
+      );
+    }
+  }
+
+  Future<Map<String, dynamic>> loginWithGoogle(String email, String displayName, String googleId) async {
+    try {
+      try {
+        final response = await _dioClient.dio.post(
+          ApiEndpoints.login,
+          data: {'email': email, 'password': 'google_sso_$googleId'},
+        );
+        final data = response.data as Map<String, dynamic>;
+        final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+        final token = data['token'] as String;
+        return {'user': user, 'token': token};
+      } catch (e) {
+        final registerResponse = await _dioClient.dio.post(
+          ApiEndpoints.register,
+          data: {'email': email, 'password': 'google_sso_$googleId'},
+        );
+        final data = registerResponse.data as Map<String, dynamic>;
+        final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+        final token = data['token'] as String;
+        return {'user': user, 'token': token};
+      }
+    } on DioException catch (e) {
+      final message =
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal sinkronisasi akun Google. Silakan coba lagi.';
+      throw Exception(message);
+    } catch (e) {
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat Google Sign-In. Silakan coba lagi nanti.',
+      );
     }
   }
 }

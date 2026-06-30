@@ -24,6 +24,20 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserModel> loginWithGoogle(String email, String displayName, String googleId) async {
+    final result = await _remoteDataSource.loginWithGoogle(email, displayName, googleId);
+    final user = result['user'] as UserModel;
+    final token = result['token'] as String;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
+    await prefs.setString('user_id', user.id);
+    await prefs.setString('user_email', user.email);
+
+    return user;
+  }
+
+  @override
   Future<UserModel> register(String email, String password) async {
     final result = await _remoteDataSource.register(email, password);
     final user = result['user'] as UserModel;

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "971440533967",
+    "project_id": "ecosim-development",
+    "storage_bucket": "ecosim-development.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971440533967:android:d9d01df3fb4581b674a2ba",
+        "android_client_info": {
+          "package_name": "com.ecosim.ecosim_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971440533967-078eb5otrqc8tsb7816u49jolv25e877.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ecosim.ecosim_flutter",
+            "certificate_hash": "8f90f4f7be771842fc40a076c2fa931f77c991bf"
+          }
+        },
+        {
+          "client_id": "971440533967-0qjd6o8tho47tp53nhovcp93bejsh9gk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ecosim.ecosim_flutter",
+            "certificate_hash": "13e1d963d09e4400092d7b5cb7c21101bc7d5705"
+          }
+        },
+        {
+          "client_id": "971440533967-otffs0ok6qh8j18nb1rf405rh2niog0c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpgwpEd-gZBF5H625EQkfFkzQkhTegsZ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971440533967-otffs0ok6qh8j18nb1rf405rh2niog0c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../controllers/auth_controller.dart';
 import '../../../village/presentation/controllers/village_controller.dart';
@@ -329,7 +330,37 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       const SizedBox(height: 20),
 
                       OutlinedButton(
-                        onPressed: () {},
+                        onPressed: authState.isLoading ? null : () async {
+                          try {
+                            final GoogleSignIn googleSignIn = GoogleSignIn();
+                            final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+                            if (googleUser != null) {
+                              final success = await ref
+                                  .read(authControllerProvider.notifier)
+                                  .loginWithGoogle(googleUser.email, googleUser.displayName ?? 'Google User', googleUser.id);
+
+                              if (success && mounted) {
+                                ref.read(villageControllerProvider.notifier).loadActiveVillage();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Login Google berhasil! Selamat datang.'),
+                                    backgroundColor: AppTheme.excellentColor,
+                                  ),
+                                );
+                              }
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Login Google dibatalkan atau gagal: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.black87,

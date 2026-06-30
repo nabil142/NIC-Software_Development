@@ -63,6 +63,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<bool> loginWithGoogle(String email, String displayName, String googleId) async {
+    state = state.copyWith(isLoading: true, errorMessage: null);
+    try {
+      final user = await _authRepository.loginWithGoogle(email, displayName, googleId);
+      state = state.copyWith(user: user, isLoading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
   Future<bool> register(String email, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     try {

@@ -44,7 +44,9 @@ class AssessmentRepositoryImpl implements AssessmentRepository {
           e.response?.data?['error'] ?? 'Gagal mengirim data asesmen.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat mengirim asesmen: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat mengirim asesmen. Silakan coba lagi nanti.',
+      );
     }
   }
 

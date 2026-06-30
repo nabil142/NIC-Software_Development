@@ -28,10 +28,13 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
       final data = response.data as Map<String, dynamic>;
       return ScenarioModel.fromJson(data['scenario'] as Map<String, dynamic>);
     } on DioException catch (e) {
-      final message = e.response?.data?['error'] ?? 'Gagal membuat skenario.';
+      final message =
+          e.response?.data?['error'] ?? e.message ?? 'Gagal membuat skenario.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat membuat skenario: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat membuat skenario. Silakan coba lagi nanti.',
+      );
     }
   }
 
@@ -49,10 +52,14 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
           .toList();
     } on DioException catch (e) {
       final message =
-          e.response?.data?['error'] ?? 'Gagal memuat daftar skenario.';
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal memuat daftar skenario.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat memuat skenario: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat memuat skenario. Silakan coba lagi nanti.',
+      );
     }
   }
 
@@ -66,10 +73,14 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
       return data['result'] as String;
     } on DioException catch (e) {
       final message =
-          e.response?.data?['error'] ?? 'Gagal menjalankan analisis AI.';
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal menjalankan analisis AI.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat analisis AI: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat menjalankan analisis AI. Silakan coba lagi nanti.',
+      );
     }
   }
 
@@ -86,7 +97,9 @@ class ScenarioRepositoryImpl implements ScenarioRepository {
           e.response?.data?['error'] ?? 'Gagal menyusun cetak biru AI.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat cetak biru AI: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat menjalankan cetak biru AI. Silakan coba lagi nanti.',
+      );
     }
   }
 }

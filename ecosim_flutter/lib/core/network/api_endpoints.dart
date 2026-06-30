@@ -4,7 +4,7 @@ class ApiEndpoints {
   static const String productionUrl =
       'https://nic-software-development.vercel.app/api';
   static const String developmentUrl =
-      'http://10.0.2.2:5000/api'; // Menggunakan 10.0.2.2 untuk Android Emulator jika berjalan di lokal
+      'http://10.0.2.2:5000/api';
 
   static const String baseUrl = kReleaseMode ? productionUrl : developmentUrl;
 

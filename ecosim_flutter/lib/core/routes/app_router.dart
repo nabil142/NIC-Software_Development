@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../features/splash/presentation/pages/splash_page.dart';
 
 import '../../features/auth/presentation/controllers/auth_controller.dart';
 import '../../features/village/presentation/controllers/village_controller.dart';
@@ -19,7 +20,7 @@ import '../../features/scenario/presentation/pages/summary_report_page.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/',
     refreshListenable: _StateNotifierListenable([
       ref.read(authControllerProvider.notifier),
       ref.read(villageControllerProvider.notifier),
@@ -34,9 +35,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLoggingIn =
           state.matchedLocation == '/login' ||
           state.matchedLocation == '/register';
+      final isSplashing = state.matchedLocation == '/';
+
+      if (isSplashing) return null;
 
       if (!loggedIn) {
-        return isLoggingIn ? null : '/login';
+        return isLoggingIn ? null : '/';
       }
 
       if (villageState.activeVillage == null && !villageState.isLoading) {
@@ -75,6 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
+      GoRoute(path: '/', builder: (context, state) => const SplashPage()),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(
         path: '/register',

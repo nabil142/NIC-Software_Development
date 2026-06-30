@@ -35,10 +35,14 @@ class VillageRepositoryImpl implements VillageRepository {
       return VillageModel.fromJson(data['village'] as Map<String, dynamic>);
     } on DioException catch (e) {
       final message =
-          e.response?.data?['error'] ?? 'Gagal menyimpan profil desa.';
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal menyimpan profil desa.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat menyimpan profil desa: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat menyimpan profil desa. Silakan coba lagi nanti.',
+      );
     }
   }
 
@@ -53,10 +57,15 @@ class VillageRepositoryImpl implements VillageRepository {
       if (e.response?.statusCode == 404) {
         return null;
       }
-      final message = e.response?.data?['error'] ?? 'Gagal memuat profil desa.';
+      final message =
+          e.response?.data?['error'] ??
+          e.message ??
+          'Gagal memuat profil desa.';
       throw Exception(message);
     } catch (e) {
-      throw Exception('Kesalahan tidak terduga saat memuat profil desa: $e');
+      throw Exception(
+        'Terjadi kesalahan tidak terduga saat memuat profil desa. Silakan coba lagi nanti.',
+      );
     }
   }
 }
