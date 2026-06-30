@@ -62,6 +62,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/images/ecosim_no_background.png"
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/images/ic_foreground.png"
