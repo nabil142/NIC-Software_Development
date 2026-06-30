@@ -20,12 +20,15 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
+        working-directory: ecosim_flutter
         run: flutter pub get
 
       - name: Build Android APK
+        working-directory: ecosim_flutter
         run: flutter build apk --release
 
       - name: Build iOS IPA (No Code Signing)
+        working-directory: ecosim_flutter
         # We build ios without code signing so it generates an IPA that can be sideloaded (with dev account or tools)
         run: |
           flutter build ios --release --no-codesign
@@ -38,10 +41,10 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ecosim-android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: ecosim_flutter/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload iOS IPA
         uses: actions/upload-artifact@v3
         with:
           name: ecosim-ios-ipa
-          path: build/ios/iphoneos/app.ipa
+          path: ecosim_flutter/build/ios/iphoneos/app.ipa
