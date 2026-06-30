@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../../../../features/auth/presentation/controllers/auth_controller.dart';
 import '../controllers/village_controller.dart';
 import '../../../assessment/presentation/controllers/assessment_controller.dart';
@@ -428,91 +429,11 @@ class _VillageProfilePageState extends ConsumerState<VillageProfilePage> {
             ),
 
             if (villageState.activeVillage != null)
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, -4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavItem(0, Icons.home_outlined, Icons.home),
-                    _buildNavItem(1, Icons.settings_outlined, Icons.settings),
-                    _buildNavItem(
-                      2,
-                      Icons.auto_awesome_outlined,
-                      Icons.auto_awesome,
-                    ),
-                    _buildNavItem(3, Icons.person_outline, Icons.person),
-                  ],
-                ),
-              ),
+              const SharedBottomNavBar(currentIndex: 3),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData outline, IconData solid) {
-    const int currentNavIndex = 3;
-    final isActive = currentNavIndex == index;
-    final color = isActive ? const Color(0xFF3E6D4E) : Colors.grey;
-
-    return GestureDetector(
-      onTap: () {
-        if (index == 0) {
-          context.go('/scenarios');
-        } else if (index == 1) {
-          context.go('/future-builder');
-        } else if (index == 2) {
-          final activeScenario =
-              ref.read(scenarioControllerProvider).activeScenario;
-          if (activeScenario == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text(
-                  'Buat skenario di Future Builder terlebih dahulu.',
-                ),
-                backgroundColor: AppTheme.poorColor,
-              ),
-            );
-            context.go('/future-builder');
-          } else {
-            context.go('/policy-analyst');
-          }
-        } else if (index == 3) {}
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        color: Colors.transparent,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(isActive ? solid : outline, color: color, size: 28),
-            if (isActive) ...[
-              const SizedBox(height: 4),
-              Container(
-                width: 16,
-                height: 3,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF3E6D4E),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
 }
