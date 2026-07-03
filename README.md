@@ -228,9 +228,6 @@ Secrets yang diperlukan di GitHub Repository:
 
 ---
 
-## 📸 Tampilan Aplikasi
-
-> *Screenshot aplikasi dapat dilihat pada dokumen laporan resmi proyek.*
 
 ---
 
@@ -240,14 +237,16 @@ Secrets yang diperlukan di GitHub Repository:
 
 | Nama | Peran |
 |------|-------|
-| Nabil Athaya | Full-Stack Developer & Project Lead |
+| Andien Oktriarahmah | Project Lead |
+| Nabil Athaya | Full-Stack Developer |
+| Reza Pratama | UI/UX Design |
 
 ---
 
 ## 📄 Lisensi
 
-Proyek ini dikembangkan untuk keperluan lomba dan bersifat privat.  
-© 2026 NIC Team. All Rights Reserved.
+Proyek ini dikembangkan untuk keperluan lomba.  
+© 2026 New Dawn Team. All Rights Reserved.
 
 ---
 
