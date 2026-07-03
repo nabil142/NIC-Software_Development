@@ -1,7 +1,7 @@
 # 🌿 EcoSim Desa
 
 <div align="center">
-  <img src="ecosim_flutter/assets/images/logo.png" alt="EcoSim Logo" width="120"/>
+  <img src="ecosim_flutter/assets/images/logo.jpeg" alt="EcoSim Logo" width="120"/>
   
   <br/>
   
