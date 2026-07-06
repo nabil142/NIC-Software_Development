@@ -101,28 +101,32 @@ class AuthRemoteDataSource {
           ApiEndpoints.login,
           data: {'email': email, 'password': 'apple_sso_$appleId'},
         );
-        return loginResponse.data['user'];
+        final data = loginResponse.data as Map<String, dynamic>;
+        final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+        final token = data['token'] as String;
+        return {'user': user, 'token': token};
       } on DioException catch (e) {
-        if (e.response?.statusCode != 401) {
-          rethrow; // Lempar jika bukan error autentikasi
+        // Hanya lanjut ke register jika 401 (belum terdaftar) atau 404
+        if (e.response?.statusCode != 401 && e.response?.statusCode != 404) {
+          rethrow;
         }
       }
 
-      // 2. Jika gagal login (akun belum ada), lakukan register
+      // 2. Jika belum terdaftar, lakukan register
       final registerResponse = await _dioClient.dio.post(
         ApiEndpoints.register,
         data: {'email': email, 'password': 'apple_sso_$appleId'},
       );
+      final data = registerResponse.data as Map<String, dynamic>;
+      final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
+      final token = data['token'] as String;
+      return {'user': user, 'token': token};
 
-      return registerResponse.data['user'];
     } on DioException catch (e) {
-      print('DioException in loginWithApple: ${e.response?.data}');
       throw Exception(
-        e.response?.data['error'] ??
-          'Gagal sinkronisasi akun Apple. Silakan coba lagi.',
+        e.response?.data?['error'] ?? 'Gagal sinkronisasi akun Apple. Silakan coba lagi.',
       );
     } catch (e) {
-      print('Exception in loginWithApple: $e');
       throw Exception(
         'Terjadi kesalahan tidak terduga saat Apple Sign-In. Silakan coba lagi nanti.',
       );

@@ -334,7 +334,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       OutlinedButton(
                         onPressed: authState.isLoading ? null : () async {
                           try {
-                            final GoogleSignIn googleSignIn = GoogleSignIn();
+                            final GoogleSignIn googleSignIn = GoogleSignIn(
+                              // iOS Client ID dari Google Cloud Console
+                              clientId: '971440533967-n2raq982ejaobdi6925rv4slnig2llho.apps.googleusercontent.com',
+                            );
                             final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
                             if (googleUser != null) {
