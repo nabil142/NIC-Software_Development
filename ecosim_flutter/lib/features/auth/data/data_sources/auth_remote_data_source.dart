@@ -95,7 +95,7 @@ class AuthRemoteDataSource {
 
   Future<Map<String, dynamic>> loginWithApple(String email, String displayName, String appleId) async {
     try {
-      // 1. Coba login (jika akun sudah ada)
+
       try {
         final loginResponse = await _dioClient.dio.post(
           ApiEndpoints.login,
@@ -112,7 +112,6 @@ class AuthRemoteDataSource {
         }
       }
 
-      // 2. Jika belum terdaftar, lakukan register
       final registerResponse = await _dioClient.dio.post(
         ApiEndpoints.register,
         data: {'email': email, 'password': 'apple_sso_$appleId'},
