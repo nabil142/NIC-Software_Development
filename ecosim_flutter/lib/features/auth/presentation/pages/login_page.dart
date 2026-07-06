@@ -336,7 +336,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           try {
                             final GoogleSignIn googleSignIn = GoogleSignIn(
                               // iOS Client ID dari Google Cloud Console
-                              clientId: '971440533967-n2raq982ejaobdi6925rv4slnig2llho.apps.googleusercontent.com',
+                              clientId: '368042770713-52faf4onnr5pbh9oghvs1pobk8vf0iv7.apps.googleusercontent.com',
                             );
                             final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
