@@ -134,7 +134,7 @@ class AuthRemoteDataSource {
 
   Future<void> deleteAccount() async {
     try {
-      await _dioClient.dio.delete('/api/auth/account');
+      await _dioClient.dio.delete(ApiEndpoints.deleteAccount);
     } on DioException catch (e) {
       throw Exception(e.response?.data['error'] ?? 'Gagal menghapus akun.');
     } catch (e) {
