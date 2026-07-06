@@ -19,10 +19,7 @@ class MockAuthRepository implements AuthRepository {
     return UserModel(id: '2', email: email);
   }
 
-  @override
-  Future<UserModel> loginWithGoogle(String email, String displayName, String googleId) async {
-    return UserModel(id: '3', email: email);
-  }
+
   @override
   Future<UserModel> loginWithApple(String email, String displayName, String appleId) async {
     return UserModel(id: '4', email: email);
