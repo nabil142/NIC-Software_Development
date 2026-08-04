@@ -89,7 +89,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     children: [
                       const SizedBox(height: 20),
                       Text(
-                        'Selamat Datang di\nEcosim',
+                        'Selamat Datang di\nEnviTor',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,

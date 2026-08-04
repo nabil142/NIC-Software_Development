@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-class EcosimRadarChart extends StatelessWidget {
+class EnvitorRadarChart extends StatelessWidget {
   final List<double>? values;
   final List<double>? projectedValues;
   final List<List<double>>? multipleDatasets;
@@ -12,7 +12,7 @@ class EcosimRadarChart extends StatelessWidget {
   final Color? baselineColor;
   final Color? projectedColor;
 
-  const EcosimRadarChart({
+  const EnvitorRadarChart({
     super.key,
     this.values,
     this.projectedValues,

@@ -91,7 +91,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                     children: [
                       const SizedBox(height: 20),
                       Text(
-                        'Buat Akun Baru\nEcosim',
+                        'Buat Akun Baru\nEnviTor',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,

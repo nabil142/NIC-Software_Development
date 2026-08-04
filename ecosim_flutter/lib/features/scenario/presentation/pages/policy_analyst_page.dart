@@ -288,7 +288,7 @@ class _PolicyAnalystPageState extends ConsumerState<PolicyAnalystPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Spacer(),
-                                  EcosimRadarChart(
+                                  EnvitorRadarChart(
                                     multipleDatasets: datasets,
                                     multipleColors: selectedColors,
                                     size: 125,

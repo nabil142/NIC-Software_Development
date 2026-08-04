@@ -749,7 +749,7 @@ class _FutureBuilderPageState extends ConsumerState<FutureBuilderPage> {
                               ],
                             ),
                             const SizedBox(height: 16),
-                            EcosimRadarChart(
+                            EnvitorRadarChart(
                               values: baselineRadar,
                               projectedValues: projectedRadar,
                               baselineColor: AppTheme.primaryColor,

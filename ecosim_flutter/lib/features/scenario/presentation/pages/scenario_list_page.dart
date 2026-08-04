@@ -591,7 +591,7 @@ class _ScenarioListPageState extends ConsumerState<ScenarioListPage> {
                                   const SizedBox(height: 16),
 
                                   Center(
-                                    child: EcosimRadarChart(
+                                    child: EnvitorRadarChart(
                                       values: radarValues,
                                     ),
                                   ),

@@ -109,108 +109,95 @@ class _SplashPageState extends State<SplashPage>
                     angle: _logoRotation.value,
                     child: Transform.scale(
                       scale: _logoScale.value,
-                      child: Transform.translate(
-                        offset: const Offset(8, 0),
-                        child: Image.asset(
-                          'assets/images/ecosim_no_background.png',
-                          width: 160,
-                          height: 160,
-                        ),
+                      child: Image.asset(
+                        'assets/images/envitor_no_background.png',
+                        width: 160,
+                        height: 160,
                       ),
                     ),
                   ),
                 );
               },
             ),
-            const SizedBox(height: 24),
             AnimatedBuilder(
-                animation: _controller,
-                builder: (context, child) {
-                  return Opacity(
-                    opacity: _textOpacity.value,
-                    child: SlideTransition(
-                      position: _textSlide,
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _textOpacity.value,
+                  child: SlideTransition(
+                    position: _textSlide,
+                    child: Transform.translate(
+                      offset: const Offset(-4, -6),
                       child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                'EcoS',
-                                style: TextStyle(
-                                  fontSize: 52,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1B4D2E),
-                                ),
-                              ),
-                              Stack(
-                                alignment: Alignment.topCenter,
-                                clipBehavior: Clip.none,
-                                children: [
-                                  const Text(
-                                    'ı',
-                                    style: TextStyle(
-                                      fontSize: 52,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF1B4D2E),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 10,
-                                    right: -2,
-                                    child: Transform.rotate(
-                                      angle: 0.5,
-                                      child: const Icon(
-                                        Icons.eco,
-                                        color: Color(0xFF5E8B3D),
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                'm',
-                                style: TextStyle(
-                                  fontSize: 52,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1B4D2E),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 2),
-                          SlideTransition(
-                            position: _subTextSlide,
-                            child: const Text(
-                              '— D E S A —',
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Envi',
                               style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF5E8B3D),
-                                letterSpacing: 8,
+                                fontSize: 52,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1B4D2E),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          SlideTransition(
-                            position: _subTextSlide,
-                            child: const Text(
-                              'Merencanakan Desa, Membangun Masa Depan',
+                            Stack(
+                              alignment: Alignment.topCenter,
+                              clipBehavior: Clip.none,
+                              children: [
+                                const Text(
+                                  'T',
+                                  style: TextStyle(
+                                    fontSize: 52,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1B4D2E),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 10,
+                                  right: -2,
+                                  child: Transform.rotate(
+                                    angle: 0.5,
+                                    child: const Icon(
+                                      Icons.eco,
+                                      color: Color(0xFF5E8B3D),
+                                      size: 24,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Text(
+                              'or',
                               style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey,
+                                fontSize: 52,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF1B4D2E),
                               ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 2),
+                        SlideTransition(
+                          position: _subTextSlide,
+                          child: const Text(
+                            '— AI Powered Environmental Planning —',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Color(0xFF5E8B3D),
+                              letterSpacing: 1.5,
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
