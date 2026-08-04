@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class ApiEndpoints {
   static const String productionUrl =
-      'https://nic-software-development.vercel.app/api';
+      'https://itfest-software-development.vercel.app/api';
   static const String developmentUrl =
       'http://10.0.2.2:5000/api';
 
