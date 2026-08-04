@@ -1,4 +1,4 @@
 @echo off
-echo Memulai EcoSim Desa Backend...
-cd ecosim_backend
+echo Memulai EnviTor Backend...
+cd envitor_backend
 npm run dev

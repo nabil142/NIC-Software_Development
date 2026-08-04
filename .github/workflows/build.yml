@@ -20,11 +20,11 @@ jobs:
           channel: 'stable'
 
       - name: Install dependencies
-        working-directory: ecosim_flutter
+        working-directory: envitor_flutter
         run: flutter pub get
 
       - name: Build Android APK
-        working-directory: ecosim_flutter
+        working-directory: envitor_flutter
         run: flutter build apk --release
 
       - name: Install Apple Certificate
@@ -49,24 +49,24 @@ jobs:
           xcode-version: latest-stable
 
       - name: Build iOS IPA (Release)
-        working-directory: ecosim_flutter
+        working-directory: envitor_flutter
         run: flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
           
       - name: Upload Android APK
         uses: actions/upload-artifact@v4
         with:
-          name: ecosim-android-apk
-          path: ecosim_flutter/build/app/outputs/flutter-apk/*.apk
+          name: envitor-android-apk
+          path: envitor_flutter/build/app/outputs/flutter-apk/*.apk
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ecosim-ios-ipa
-          path: ecosim_flutter/build/ios/ipa/*.ipa
+          name: envitor-ios-ipa
+          path: envitor_flutter/build/ios/ipa/*.ipa
 
       - name: Upload to TestFlight
         if: github.ref == 'refs/heads/main'
-        working-directory: ecosim_flutter
+        working-directory: envitor_flutter
         run: |
           mkdir -p ~/.appstoreconnect/private_keys/
           echo "${{ secrets.APPSTORE_P8_BASE64 }}" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APPSTORE_KEY_ID }}.p8
