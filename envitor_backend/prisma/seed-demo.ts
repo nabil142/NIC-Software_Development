@@ -18,7 +18,7 @@ const prisma = new PrismaClient();
 async function seedDemoAccount() {
   console.log('🌱 Membuat akun demo untuk Apple Review...\n');
 
-  const DEMO_EMAIL = 'demo@ecosim.com';
+  const DEMO_EMAIL = 'demo@envitor.com';
   const DEMO_PASSWORD = 'Demo1234!';
 
   try {
@@ -98,7 +98,7 @@ async function seedDemoAccount() {
 
     console.log('\n🎉 SELESAI! Akun demo berhasil dibuat.\n');
     console.log('═══════════════════════════════════════');
-    console.log('  📧 Email    : demo@ecosim.com');
+    console.log('  📧 Email    : demo@envitor.com');
     console.log('  🔑 Password : Demo1234!');
     console.log('═══════════════════════════════════════');
     console.log('\nGunakan kredensial di atas untuk diisi di form TestFlight External Testing.\n');

@@ -1,7 +1,7 @@
 {
-  "name": "ecosim-backend",
+  "name": "envitor-backend",
   "version": "1.0.0",
-  "description": "Backend API for EcoSim Desa using Node.js, Express, TypeScript, and Prisma ORM",
+  "description": "Backend API for Envitor Desa using Node.js, Express, TypeScript, and Prisma ORM",
   "main": "dist/app.js",
   "scripts": {
     "postinstall": "prisma generate",

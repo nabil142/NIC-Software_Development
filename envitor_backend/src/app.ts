@@ -41,7 +41,7 @@ app.post('/api/scenarios/:id/analyst', authMiddleware as any, runScenarioAnalysi
 app.post('/api/scenarios/:id/blueprint', authMiddleware as any, runScenarioBlueprint as any);
 
 app.get('/', (req, res) => {
-  res.status(200).send('EcoSim Desa Backend API is running perfectly!');
+  res.status(200).send('Envitor Desa Backend API is running perfectly!');
 });
 
 app.get('/health', (req, res) => {
@@ -58,7 +58,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 if (process.env.NODE_ENV !== 'production') {
   app.listen(port, () => {
-    console.log(`Server EcoSim Desa Backend berjalan di port ${port}`);
+    console.log(`Server Envitor Desa Backend berjalan di port ${port}`);
   });
 }
 
