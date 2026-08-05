@@ -1,7 +1,7 @@
-# 🌿 EcoSim Desa
+# 🌿 Envitor Desa
 
 <div align="center">
-  <img src="ecosim_flutter/assets/images/logo.png" alt="EnviTor Logo" width="120"/>
+  <img src="envitor_flutter/assets/images/logo.png" alt="EnviTor Logo" width="120"/>
   
   <br/>
   
@@ -29,7 +29,7 @@
 
 ## 📱 Tentang Aplikasi
 
-**EcoSim Desa** adalah aplikasi mobile lintas platform (Android & iOS) yang dirancang untuk membantu perangkat desa dan pemangku kepentingan dalam:
+**Envitor Desa** adalah aplikasi mobile lintas platform (Android & iOS) yang dirancang untuk membantu perangkat desa dan pemangku kepentingan dalam:
 
 - 🔍 **Menilai kondisi lingkungan** desa secara terstruktur melalui asesmen digital
 - 🤖 **Mendapatkan rekomendasi solusi AI** berdasarkan data lingkungan yang diinput
@@ -94,7 +94,7 @@
 ```
 NIC-Software_Development/
 │
-├── ecosim_flutter/          # 📱 Aplikasi Flutter (Frontend)
+├── envitor_flutter/          # 📱 Aplikasi Flutter (Frontend)
 │   ├── lib/
 │   │   ├── core/            # Theme, network, shared widgets
 │   │   └── features/        # Fitur-fitur aplikasi
@@ -105,7 +105,7 @@ NIC-Software_Development/
 │   ├── ios/                 # Konfigurasi iOS (Xcode)
 │   └── android/             # Konfigurasi Android (Gradle)
 │
-├── ecosim_backend/          # 🖥️ Server Node.js (Backend)
+├── envitor_backend/          # 🖥️ Server Node.js (Backend)
 │   ├── src/
 │   │   ├── controllers/     # Logic bisnis (auth, village, assessment, scenario)
 │   │   ├── middlewares/     # JWT auth middleware
@@ -159,7 +159,7 @@ cd NIC-Software_Development
 
 ### 2. Setup Backend
 ```bash
-cd ecosim_backend
+cd envitor_backend
 
 # Install dependencies
 npm install
@@ -177,7 +177,7 @@ npm run dev
 
 ### 3. Setup Flutter
 ```bash
-cd ../ecosim_flutter
+cd ../envitor_flutter
 
 # Install dependencies
 flutter pub get
@@ -190,7 +190,7 @@ flutter run
 
 ## 🔧 Variabel Lingkungan (Environment Variables)
 
-Buat file `.env.development` di folder `ecosim_backend/` dengan isi berikut:
+Buat file `.env.development` di folder `envitor_backend/` dengan isi berikut:
 
 ```env
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
